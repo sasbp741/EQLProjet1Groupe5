@@ -1,8 +1,6 @@
 package fr.eql.ai109.projet1;
 
-import java.io.File;
 import java.util.Optional;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -106,9 +104,9 @@ public class MainPanel extends BorderPane {
 		// ListPan
 
 		StudentDao dao = new StudentDao();
-		// ObservableList<Student> observableStudents = FXCollections
-		// .observableArrayList(dao.chargerFichierStudent());
-		TableView<Student> studentTable = new TableView<Student>(/* observableStudents */);
+		ObservableList<Student> observableStudents = FXCollections.observableArrayList(dao.loadStudentFile());
+		
+		TableView<Student> studentTable = new TableView<Student>(observableStudents);
 
 		TableColumn<Student, String> lastNameCol = new TableColumn<Student, String>("Nom");
 		lastNameCol.setCellValueFactory(new PropertyValueFactory<Student, String>("lastName"));
@@ -116,22 +114,23 @@ public class MainPanel extends BorderPane {
 		TableColumn<Student, String> firstNameCol = new TableColumn<Student, String>("Prénom");
 		firstNameCol.setCellValueFactory(new PropertyValueFactory<Student, String>("firstName"));
 
-		TableColumn<Student, Integer> zipCodeCol = new TableColumn<Student, Integer>("Département");
-		zipCodeCol.setCellValueFactory(new PropertyValueFactory<Student, Integer>("zipCode"));
+		TableColumn<Student, String> zipCodeCol = new TableColumn<Student, String>("Département");
+		zipCodeCol.setCellValueFactory(new PropertyValueFactory<Student, String>("zipCode"));
 
 		TableColumn<Student, String> classCol = new TableColumn<Student, String>("Promotion");
-		classCol.setCellValueFactory(new PropertyValueFactory<Student, String>("class"));
+		classCol.setCellValueFactory(new PropertyValueFactory<Student, String>("promo"));
 
-		TableColumn<Student, Integer> yearCol = new TableColumn<Student, Integer>("Année");
-		yearCol.setCellValueFactory(new PropertyValueFactory<Student, Integer>("year"));
+		TableColumn<Student, String> yearCol = new TableColumn<Student, String>("Année");
+		yearCol.setCellValueFactory(new PropertyValueFactory<Student, String>("year"));
 
-//		lastNameCol.setMinWidth(100);
-//		lastNameCol.setPrefWidth(120);
-//
-//		classCol.setMinWidth(100);
-//		classCol.setPrefWidth(100);
+		lastNameCol.setMinWidth(100);
+		lastNameCol.setPrefWidth(150);
+
+		firstNameCol.setMinWidth(100);
+		firstNameCol.setPrefWidth(120);
 
 		studentTable.getColumns().addAll(lastNameCol, firstNameCol, zipCodeCol, classCol, yearCol);
+		studentTable.getSortOrder().add(lastNameCol);
 		studentTable.prefWidthProperty().bind(mainPan.widthProperty());
 		studentTable.prefHeightProperty().bind(mainPan.heightProperty());
 
@@ -157,17 +156,27 @@ public class MainPanel extends BorderPane {
 		this.setCenter(mainPan);
 		this.setBottom(buttonBox);
 
+		
+		// EVENTS
+		
+		// Events menu
+		
+		add.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				addStudentPanel();
+			}
+
+		});
+		
 		addButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				winMode = "add";
-				EditPanel root = new EditPanel(winMode, -1, null);
-				Scene scene2 = new Scene(root);
-				Stage stage = (Stage) getScene().getWindow();
-
-				stage.setScene(scene2);
+				addStudentPanel();
 			}
+
 		});
 
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -205,6 +214,15 @@ public class MainPanel extends BorderPane {
 
 	}
 
+	private void addStudentPanel() {
+		winMode = "add";
+		EditPanel root = new EditPanel(winMode, -1, null);
+		Scene scene2 = new Scene(root);
+		Stage stage = (Stage) getScene().getWindow();
+
+		stage.setScene(scene2);
+	}
+	
 	public void switchUserMode(String userMode) {
 		if (userMode.equals("admin")) {
 			userMode = "user";

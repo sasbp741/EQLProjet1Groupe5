@@ -36,25 +36,25 @@ public class MainApp extends Application {
 
 	public static void main(String[] args) {
 
-		definemaxLength(maxLength);
+		//definemaxLength(maxLength);
 		// showmaxLength(maxLength);
 
 //		if (!binFile.exists()) {
-		writeDestinationFile();
+		//writeDestinationFile();
 //		}
 		System.out.println(SEQUENCE_LENGTH);
 		System.out.println(entriesNumber);
 
-		sortTargetFile();
-		// displayNames();
+		//sortTargetFile();
+		//displayNames();
 
-		writeChildren();
-		displayNames();
-		System.out.println("valeur du tableau " + isWritten[0][0]);
+		//writeChildren();
+		//displayNames();
+//		System.out.println("valeur du tableau " + isWritten[0][0]);
 
-		for (int i = 0; i < isWritten.length; i++) {
-			System.out.println("valeur " + i + " " + isWritten[i][2]);
-		}
+//		for (int i = 0; i < isWritten.length; i++) {
+//			System.out.println("valeur " + i + " " + isWritten[i][2]);
+//		}
 
 		launch(args);
 	}
