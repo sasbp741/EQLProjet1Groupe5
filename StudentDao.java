@@ -1,6 +1,7 @@
 package fr.eql.ai109.projet1;
 
 import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -8,6 +9,15 @@ import java.util.List;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+
+import java.io.IOException;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 
 public class StudentDao {
 	private static String destinationPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
@@ -77,4 +87,29 @@ public class StudentDao {
 		deleteStudentAlert.showAndWait();
 	}
 
+    public static void exportToPdf() throws IOException {
+        String filename = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\sample.pdf";
+        String title = "Annuaire EQL";
+         
+        PDDocument doc = new PDDocument();
+        try {
+            PDPage page = new PDPage();
+            doc.addPage(page);
+             
+            PDFont titleFont = PDType1Font.HELVETICA_BOLD;
+ 
+            PDPageContentStream contents = new PDPageContentStream(doc, page);
+            contents.beginText();
+            contents.setFont(titleFont, 30);
+            contents.newLineAtOffset(50, 700);
+            contents.showText(title);
+            contents.endText();
+            contents.close();
+             
+            doc.save(filename);
+        }
+        finally {
+            doc.close();
+        }
+    }
 }
