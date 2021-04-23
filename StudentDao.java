@@ -1,7 +1,7 @@
 package fr.eql.ai109.projet1;
 
 import java.io.FileNotFoundException;
-
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -12,16 +12,16 @@ import javafx.scene.control.Alert.AlertType;
 
 import java.io.IOException;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
 
 public class StudentDao {
-	private static String destinationPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
+	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
+
+	int entriesNumber = 1318;
+	int SEQUENCE_LENGTH = 81;
+	static int[] maxLength = new int[] {21,20,2,10,4};
+	private static String spaceChar = " ";
+	private static int CHILDREN_MAX_LENGTH = 12;
 
 	public List<Student> loadStudentFile() {
 		studentList.clear();
@@ -31,15 +31,6 @@ public class StudentDao {
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
-
-		int entriesNumber = 1314;
-		int SEQUENCE_LENGTH = 81;
-		int[] maxLength = new int[5];
-		maxLength[0] = 21;
-		maxLength[1] = 20;
-		maxLength[2] = 2;
-		maxLength[3] = 10;
-		maxLength[4] = 4;
 
 		for (int i = 0; i < entriesNumber; i++) {
 			String[] studentInfo = new String[5];
@@ -61,12 +52,43 @@ public class StudentDao {
 				e.printStackTrace();
 			}
 		}
+		try {
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return studentList;
 	}
 
-	public static void addStudent(Student student) {
-		// TODO Auto-generated method stub
+	private static String studentToString (Student student) {
 
+		String[] str = new String[] {student.getLastName(),student.getFirstName(),student.getZipCode(),student.getPromo(),student.getYear()};
+		StringBuffer sb = new StringBuffer();
+		for (int j = 0; j < 6; j++) {
+			if (j < 5) {
+				sb.append(str[j]);
+				for (int i = 0; i < maxLength[j] - str[j].length(); i++) {
+					sb.append(spaceChar);
+				}
+			}else {
+				for (int i = 0; i < 2 * CHILDREN_MAX_LENGTH; i++) {
+					sb.append(spaceChar);
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	public static void addStudent(Student student) {
+		String chaine = studentToString(student) ;
+		try {
+			FileWriter fileAdd = new FileWriter(destinationPath,true) ;
+			byte[] b = chaine.getBytes();
+			fileAdd.write(chaine);
+			fileAdd.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void editStudent(int studentId, Student student) {
@@ -86,30 +108,4 @@ public class StudentDao {
 
 		deleteStudentAlert.showAndWait();
 	}
-
-    public static void exportToPdf() throws IOException {
-        String filename = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\sample.pdf";
-        String title = "Annuaire EQL";
-         
-        PDDocument doc = new PDDocument();
-        try {
-            PDPage page = new PDPage();
-            doc.addPage(page);
-             
-            PDFont titleFont = PDType1Font.HELVETICA_BOLD;
- 
-            PDPageContentStream contents = new PDPageContentStream(doc, page);
-            contents.beginText();
-            contents.setFont(titleFont, 30);
-            contents.newLineAtOffset(50, 700);
-            contents.showText(title);
-            contents.endText();
-            contents.close();
-             
-            doc.save(filename);
-        }
-        finally {
-            doc.close();
-        }
-    }
 }

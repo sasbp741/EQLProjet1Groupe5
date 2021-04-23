@@ -31,29 +31,38 @@ public class EditPanel extends BorderPane {
 	private Label lblLastName = new Label("Nom du student :");
 	private Label lblFirstName = new Label("Prénom du student :");
 	private Label lblZipCode = new Label("Département :");
-	private Label lblPromo = new Label("Promotion");
-	private Label lblYear = new Label("Année");
+	private Label lblPromo = new Label("Promotion :");
+	private Label lblYear = new Label("Année :");
 
 
-	private ObservableList<String> observableZipCodes = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6",
-			"7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
-			"25");
-
+	private ObservableList<String> observableZipCodes = FXCollections.observableArrayList(
+		//Departement français
+			"01" , "02" , "03" , "04" , "05" , "06" , "07" , "08" , "09" , 	"10" , "11" , "12" , "13" , "14" , "15" , "16" , "17" , "18" , "19" , "21" , "22" , "23" , "24" , "25" , "26" , "27" , "28" , "29" , 	"30" , "31" , "32" , "33" , "34" , "35" , "36" , "37" , "38" , "39" , 
+			"40" , "41" , "42" , "43" , "44" , "45" , "46" , "47" , "48" , "49" , "50" , "51" , "52" , "53" , "54" , "55" , "56" , "57" , "58" , "59" , 	"60" , "61" , "62" , "63" , "64" , "65" , "66" , "67" , "68" , "69" , 			"70" , "71" , "72" , "73" , "74" , "75" , "76" , "77" , "78" , "79" , "80" , "81" , "82" , "83" , "84" , "85" , "86" , "87" , "88" , "89" , "90" , "91" , "92" , "93" , "94" , "95" , "2A" , "2B" , "971" , "972" , "973" , "974" , "976",
+		//Code Pays?
+			"AE" , "AF" , "AG" , "AI" , "AL" , "AM" , "AN" , "AO" , "AQ" , "AR" , "AS" , "AT" , "AU" , "AW" , "AX" , "AZ" ,  "BA" , "BB" , "BD" , "BE" , "BF" , "BG" , "BH" , "BI" , "BJ" , "BM" , "BN" , "BO" , "BR" , "BS" , "BT" , "BV" , "BW" , "BY" , "BZ" , "CA" , "CC" , "CD" , "CF" , "CG" , "CH" , "CI" , "CK" , "CL" , "CM" , "CN" , "CO" , "CR" , "CS" , "CU" , "CV" , "CX" , "CY" , "CZ" , 	"DE" , "DJ" , "DK" , "DM" , "DO" , "DZ" ,  "EC" , "EE" , "EG" , "EH" , "ER" , "ES" , "ET" , "FI" , "FJ" , "FK" , "FM" , "FO" , "FR" , 	"GA" , "GB" , "GD" , "GE" , "GF" , "GH" , "GI" , "GL" , "GM" , "GN" , "GP" , "GQ" , "GR" , "GS" , "GT" , "GU" , "GW" , "GY" , "HK" , "HM" , "HN" , "HR" , "HT" , "HU" , "ID" , "IE" , "IL" , "IM" , "IN" , "IO" , "IQ" , "IR" , "IS" , "IT" , 	
+			"JM" , "JO" , "JP" , "KE" , "KG" , "KH" , "KI" , "KM" , "KN" , "KP" , "KR" , "KW" , "KY" , "KZ" , 	"LA" , "LB" , "LC" , "LI" , "LK" , "LR" , "LS" , "LT" , "LU" , "LV" , "LY" , "MA" , "MC" , "MD" , "MG" , "MH" , "MK" , "ML" , "MM" , "MN" , "MO" , "MP" , "MQ" , "MR" , "MS" , "MT" , "MU" , "MV" , "MW" , "MX" , "MY" , "MZ" , "NA" , "NC" , "NE" , "NF" , "NG" , "NI" , "NL" , "NO" , "NP" , "NR" , "NU" , "NZ" , 	"OM" , 	"PA" , "PE" , "PF" , "PG" , "PH" , "PK" , "PL" , "PM" , "PN" , "PR" , "PS" , "PT" , "PW" , "PY" , "QA" , 	"RE" , "RO" , "RU" , "RW" , "SA" , "SB" , "SC" , "SD" , "SE" , "SG" , "SH" , "SI" , "SJ" , "SK" , "SL" , "SM" , "SN" , "SO" , "SR" , "ST" , "SV" , "SY" , "SZ" , "TC" , "TD" , "TF" , "TG" , "TH" , "TJ" , "TK" , "TL" , "TM" , "TN" , "TO" , "TR" , "TT" , "TV" , "TW" , "TZ" , "UA" , "UG" , "UM" , "US" , "UY" , "UZ" , "VA" , "VC" , "VE" , "VG" , "VI" , "VN" , "VU" , "WF" , "WS" , "YE" , "YT" , "ZA" , "ZM" , "ZW" , "ZM" 
+			);
+	
+	
+	
+	//utilité de l'observablePromos à voir car cbox seulement dans editStudent
 	private ObservableList<String> observablePromos = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "10");
-
+	
 	private ObservableList<String> observableYears = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "10");
 
 	
+		
 	public String nom, prenom, departement, promotion, annee = "";
 	private TextField fldLastName = new TextField(nom);
 	private TextField fldFirstName = new TextField(prenom);
+	private TextField fldPromo = new TextField(promotion); // to addStudent
 	private ComboBox<String> cbZipCode = new ComboBox<String>(observableZipCodes);
-	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos);
+	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos); // to editStudent
 	private ComboBox<String> cbYear = new ComboBox<String>(observableYears);
-	
-
+		
 	private Button saveButton = new Button("Ajouter le student");
 	private Button cancelButton = new Button("Annuler");
 
@@ -93,13 +102,13 @@ public class EditPanel extends BorderPane {
 
 		HBox hbFirstName = new HBox(hSpace);
 		hbFirstName.getChildren().addAll(lblFirstName, fldFirstName);
-
-
+		
+		HBox hbPromo = new HBox(hSpace);
+		hbPromo.getChildren().addAll(lblPromo, fldPromo);
+	//	fldPromo.setMaxWidth(100.);
+		
 		HBox hbZipCode = new HBox(hSpace);
 		hbZipCode.getChildren().addAll(lblZipCode, cbZipCode);
-
-		HBox hbPromo = new HBox(hSpace);
-		hbPromo.getChildren().addAll(lblPromo, cbPromo);
 
 		HBox hbYear = new HBox(hSpace);
 		hbYear.getChildren().addAll(lblYear, cbYear);
@@ -116,7 +125,7 @@ public class EditPanel extends BorderPane {
 		hbPromo.setAlignment(hbAlign);
 		hbYear.setAlignment(hbAlign);
 		middle.setAlignment(Pos.CENTER);
-		form.getChildren().addAll(hbLastName, hbFirstName, hbZipCode, hbPromo, hbYear);
+		form.getChildren().addAll(hbLastName, hbFirstName, hbPromo, hbZipCode, hbYear);
 
 		setTop(header);
 		setCenter(middle);
@@ -136,6 +145,14 @@ public class EditPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
+								
+				String lastName =  fldLastName.getText().toUpperCase();
+				String firstName = capitalizeString(fldFirstName.getText()) ;
+				String zipCode = cbZipCode.getSelectionModel().getSelectedItem() ;
+				String promo = fldPromo.getText().toUpperCase() ;
+				String year = cbYear.getSelectionModel().getSelectedItem();
+				Student studentGetTextField = new Student (lastName, firstName, zipCode, promo, year) ;
+
 //				if (winMode == "add") {
 //					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
 //							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
@@ -155,6 +172,10 @@ public class EditPanel extends BorderPane {
 //				}
 			
 				MainPanel root = new MainPanel();
+				
+				root.getObservableStudents().add(studentGetTextField) ;
+				StudentDao.addStudent(studentGetTextField);
+				
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
 
@@ -179,29 +200,67 @@ public class EditPanel extends BorderPane {
 
 	}
 	
-//	public static final String NAME_REGEX = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
-//    public static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
-//	public boolean REGEXLengthNom(String nom) {
-//		if (nom.length() > 24) {
-//			return true;
-////		} else if (NAME_PATTERN.matcher(nom).matches()) {
-////			return true;
-//		} else if (nom.length() == 0) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-//
-//	public boolean REGEXLengthPrenom(String prenom) {
-//		if (prenom.length() > 24) {
-//			return true;
-////		} else if (NAME_PATTERN.matcher(prenom).matches()) {
-////			return true;
-//		} else if (nom.length() == 0) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
+	public static String capitalizeString(String string) { 
+		char[] chars = string.toLowerCase().toCharArray(); 
+		boolean found = false; 
+		for (int i = 0; i < chars.length; i++) { 
+			if (!found && Character.isLetter(chars[i])) { 
+				chars[i] = Character.toUpperCase(chars[i]); 
+				found = true; 
+				} else if (Character.isWhitespace(chars[i]) || chars[i]=='.' || chars[i]=='\'' || chars[i]=='-'  || chars[i]==' ') {
+					found = false; 
+					}
+					}
+		return String.valueOf(chars); 
+	}
+
+	public TextField getFldLastName() {
+		return fldLastName;
+	}
+
+	public void setFldLastName(TextField fldLastName) {
+		this.fldLastName = fldLastName;
+	}
+
+	public TextField getFldFirstName() {
+		return fldFirstName;
+	}
+
+	public void setFldFirstName(TextField fldFirstName) {
+		this.fldFirstName = fldFirstName;
+	}
+	
+	public TextField getFldPromo() {
+		return fldPromo;
+	}
+
+	public void setFldPromo(TextField fldPromo) {
+		this.fldPromo = fldPromo;
+	}
+
+
+	public ComboBox<String> getCbZipCode() {
+		return cbZipCode;
+	}
+
+	public void setCbZipCode(ComboBox<String> cbZipCode) {
+		this.cbZipCode = cbZipCode;
+	}
+
+	public ComboBox<String> getCbPromo() {
+		return cbPromo;
+	}
+
+	public void setCbPromo(ComboBox<String> cbPromo) {
+		this.cbPromo = cbPromo;
+	}
+
+	public ComboBox<String> getCbYear() {
+		return cbYear;
+	}
+
+	public void setCbYear(ComboBox<String> cbYear) {
+		this.cbYear = cbYear;
+	}
+
 }

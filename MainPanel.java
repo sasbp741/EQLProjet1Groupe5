@@ -32,12 +32,16 @@ import javafx.scene.control.SeparatorMenuItem;
 
 public class MainPanel extends BorderPane {
 
+	private StudentDao dao = new StudentDao();
+	private ObservableList<Student> observableStudents ;
+	
 	public String winMode = "";
 	private Button addButton = new Button("Ajouter un stagiaire");
 	private Button editButton = new Button("Modifier le stagiaire");
 	private Button delButton = new Button("Supprimer le stagiaire");
 	public static String iconDir = "C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/";
 
+	
 	final Menu File = new Menu("Fichier");
 	final Menu Edition = new Menu("Edition");
 	final Menu Mode = new Menu("Mode");
@@ -103,8 +107,8 @@ public class MainPanel extends BorderPane {
 
 		// ListPan
 
-		StudentDao dao = new StudentDao();
-		ObservableList<Student> observableStudents = FXCollections.observableArrayList(dao.loadStudentFile());
+		
+		observableStudents = FXCollections.observableArrayList(dao.loadStudentFile());
 		
 		TableView<Student> studentTable = new TableView<Student>(observableStudents);
 
@@ -131,6 +135,8 @@ public class MainPanel extends BorderPane {
 
 		studentTable.getColumns().addAll(lastNameCol, firstNameCol, zipCodeCol, classCol, yearCol);
 		studentTable.getSortOrder().add(lastNameCol);
+		lastNameCol.setSortType(TableColumn.SortType.ASCENDING);
+		studentTable.sort(); 
 		studentTable.prefWidthProperty().bind(mainPan.widthProperty());
 		studentTable.prefHeightProperty().bind(mainPan.heightProperty());
 
@@ -175,6 +181,8 @@ public class MainPanel extends BorderPane {
 			@Override
 			public void handle(ActionEvent event) {
 				addStudentPanel();
+				
+				
 			}
 
 		});
@@ -208,10 +216,10 @@ public class MainPanel extends BorderPane {
 			public void changed(ObservableValue<? extends Student> observable, Student oldValue, Student newValue) {
 				editButton.setDisable(false);
 				delButton.setDisable(false);
-
 			}
 		});
-
+		
+		
 	}
 
 	private void addStudentPanel() {
@@ -241,4 +249,19 @@ public class MainPanel extends BorderPane {
 			result.ifPresent(name -> System.out.println("Your name: " + name));
 		}
 	}
+	
+	//-----------------------------------------GET&SET 
+	public ObservableList<Student> getObservableStudents() {
+		return observableStudents;
+	}
+
+	public StudentDao getDao() {
+		return dao;
+	}
+
+	public void setDao(StudentDao dao) {
+		this.dao = dao;
+	}
+	
+	
 }

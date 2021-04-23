@@ -15,9 +15,11 @@ import java.util.Queue;
 
 public class MainApp extends Application {
 
-	private static String originalPath = "C:\\Users\\formation\\Documents\\COURS_EQL\\Projet1\\stagiaires.txt";
-	private static String destinationPath = "C:\\Users\\formation\\Documents\\COURS_EQL\\Projet1\\stagiairesRaf.bin";
-	public static int[] maxLength = new int[7];
+
+
+	private static String originalPath = "c:/projet1/stagiaires.txt";
+	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
+	private static int[] maxLength = new int[7];
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
 	static File binFile = new File(destinationPath);
@@ -40,6 +42,7 @@ public class MainApp extends Application {
 
 	public static void main(String[] args) {
 
+
 		//definemaxLength(maxLength);
 		//showmaxLength(maxLength);
 
@@ -60,6 +63,7 @@ public class MainApp extends Application {
 		launch(args);
 		//addNewStudentToTree();
 		//displayNames();
+
 
 
 	}
