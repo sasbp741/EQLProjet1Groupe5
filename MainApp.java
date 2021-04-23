@@ -9,11 +9,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+// ------------ AJOUT
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class MainApp extends Application {
 
-	private static String originalPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
-	private static String destinationPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
-	private static int[] maxLength = new int[7];
+	private static String originalPath = "C:\\Users\\formation\\Documents\\COURS_EQL\\Projet1\\stagiaires.txt";
+	private static String destinationPath = "C:\\Users\\formation\\Documents\\COURS_EQL\\Projet1\\stagiairesRaf.bin";
+	public static int[] maxLength = new int[7];
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
 	static File binFile = new File(destinationPath);
@@ -21,43 +25,113 @@ public class MainApp extends Application {
 	static int entriesNumber = 0;
 	private static boolean[][] isWritten = new boolean[1314][3];
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-
-		MainPanel root = new MainPanel();
-		Scene scene = new Scene(root);
-
-		primaryStage.setResizable(true);
-		primaryStage.setScene(scene);
-		primaryStage.sizeToScene();
-		primaryStage.setTitle("Annuaire EQL");
-		primaryStage.show();
-	}
+		@Override
+		public void start(Stage primaryStage) throws Exception {
+	
+			MainPanel root = new MainPanel();
+			Scene scene = new Scene(root);
+	
+			primaryStage.setResizable(true);
+			primaryStage.setScene(scene);
+			primaryStage.sizeToScene();
+			primaryStage.setTitle("Annuaire EQL");
+			primaryStage.show();
+		}
 
 	public static void main(String[] args) {
 
-		definemaxLength(maxLength);
-		// showmaxLength(maxLength);
+		//definemaxLength(maxLength);
+		//showmaxLength(maxLength);
 
-//		if (!binFile.exists()) {
-		writeDestinationFile();
-//		}
-		System.out.println(SEQUENCE_LENGTH);
-		System.out.println(entriesNumber);
+		//		if (!binFile.exists()) {
+		//writeDestinationFile();
+		//		}
+		//System.out.println(SEQUENCE_LENGTH);
+		//System.out.println(entriesNumber);
 
-		sortTargetFile();
-		// displayNames();
-
-		writeChildren();
-		displayNames();
-		System.out.println("valeur du tableau " + isWritten[0][0]);
-
-		for (int i = 0; i < isWritten.length; i++) {
-			System.out.println("valeur " + i + " " + isWritten[i][2]);
-		}
+		//sortTargetFile();
+		//writeChildren();
+		//		System.out.println("valeur du tableau " + isWritten[0][0]);
+		//
+		//		for (int i = 0; i < isWritten.length; i++) {
+		//			System.out.println("valeur " + i + " " + isWritten[i][2]);
+		//		}
 
 		launch(args);
+		//addNewStudentToTree();
+		//displayNames();
+
+
 	}
+
+	//----------------- AJOUT
+	
+	public static void addNewStudentToTree() {
+		File dest = new File(destinationPath);
+		RandomAccessFile raf = null;
+		try {
+			raf = new RandomAccessFile(dest, "rw");
+//			raf.seek(SEQUENCE_LENGTH * entriesNumber);
+//			raf.write("PHOMMA               Yasamine            92AI 94     2015                        ".getBytes());
+//			entriesNumber++;
+			int indexNewStudent = entriesNumber - 1;
+			String newStudentName = getStudentString(indexNewStudent, raf).trim();
+			String medianName = getStudentString(657,raf).trim();
+			if (newStudentName.compareTo(medianName) >= 0) {
+				String SAD = getStudentSAD(657, raf);
+				if (SAD.length() > 0) {
+					int indexSAD = Integer.parseInt(SAD);
+					addNewStudentToTreeRecursive(indexSAD, newStudentName, raf, indexNewStudent);
+				} else {
+					System.out.println("pas de lancement");
+				}
+			} else {
+				String SAG = getStudentSAG(657, raf);
+				if (SAG.length() > 0) {
+					int indexSAG = Integer.parseInt(SAG);
+					addNewStudentToTreeRecursive(indexSAG, newStudentName, raf, indexNewStudent);
+				} else {
+					System.out.println("pas de lancement");
+				}
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (raf != null) {
+					raf.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	static void addNewStudentToTreeRecursive(int index, String name, RandomAccessFile raf, int indexNewFile) throws IOException {
+		String addName = getStudentString(index, raf);
+		String SAD = getStudentSAD(index, raf);
+		String SAG = getStudentSAG(index, raf);
+		if (addName.compareTo(name) < 0) {
+			if (SAD.length() < 1) {
+				raf.seek((index + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH);
+				raf.write(Integer.toString(indexNewFile).getBytes());
+				return;
+			} else {
+				addNewStudentToTreeRecursive(Integer.parseInt(SAD), name, raf, indexNewFile);
+			}
+		} else {
+			if (SAG.length() < 1) {
+				raf.seek((index + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH * 2);
+				raf.write(Integer.toString(indexNewFile).getBytes());
+				return;
+			} else {
+				addNewStudentToTreeRecursive(Integer.parseInt(SAG), name, raf, indexNewFile);
+			}
+		}
+	}
+
+	// ------------------  ECRITURE DES SAG ET SAD
 
 	private static void writeChildren() {
 		File dest = new File(destinationPath);
@@ -82,10 +156,10 @@ public class MainApp extends Application {
 
 	static void dichotomousWriteChildren(int debut, int fin, RandomAccessFile raf) throws IOException {
 		int median = (debut + fin) / 2;
-//		if (fin - debut <= 2 ) {
-//			// writeFeuille(median, raf);
-//			return;
-//		} else {
+		//		if (fin - debut <= 2 ) {
+		//			// writeFeuille(median, raf);
+		//			return;
+		//		} else {
 		int SAG = (debut + median) / 2;
 		int SAD = (median + fin) / 2;
 		if (SAG == entriesNumber / 2 || SAD == entriesNumber / 2) {
@@ -206,8 +280,15 @@ public class MainApp extends Application {
 		raf.seek(index * SEQUENCE_LENGTH);
 		byte[] b = new byte[SEQUENCE_LENGTH];
 		raf.read(b);
-		String nom = new String(b);
-		return nom;
+		String student = new String(b);
+		return student;
+	}
+
+	private static String getStudentSAD(int index, RandomAccessFile raf) throws IOException {
+		return getStudent(index, raf).substring(SEQUENCE_LENGTH - maxLength[5], SEQUENCE_LENGTH).trim();
+	}
+	private static String getStudentSAG(int index, RandomAccessFile raf) throws IOException {
+		return getStudent(index, raf).substring(SEQUENCE_LENGTH - maxLength[5] - maxLength[6], SEQUENCE_LENGTH - maxLength[5]).trim();
 	}
 
 	// ------------------------------------------------------ ECRITURE DU RAF

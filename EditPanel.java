@@ -1,5 +1,7 @@
 package fr.eql.ai109.projet1;
 
+import java.util.regex.Pattern;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +24,8 @@ public class EditPanel extends BorderPane {
 	private Label lblDepartement = new Label("Département :");
 	private Label lblPromotion = new Label("Promotion");
 	private Label lblAnnee = new Label("Année");
+//	private Label lblRegexName = new Label("Votre nom est incorrecte");
+//	private Label lblRegexSurname = new Label("Votre prenom est incorrecte");
 
 	private ObservableList<String> observableDepartements = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6",
 			"7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
@@ -46,10 +50,13 @@ public class EditPanel extends BorderPane {
 	private Button btAnnul = new Button("Annuler");
 
 	public EditPanel(String winMode, int stagiaireIndex, Student stagiaire) {
-		setPrefSize(350, 200);
+		setPrefSize(500, 300);
 
 		// setMaxWidth(300);
 		// setMaxHeight(200);
+		
+//		lblRegexName.setVisible(false);
+//		lblRegexSurname.setVisible(false);
 
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
@@ -65,10 +72,10 @@ public class EditPanel extends BorderPane {
 		int hSpace = 20;
 
 		HBox hbNom = new HBox(hSpace);
-		hbNom.getChildren().addAll(lblNom, fldNom);
+		hbNom.getChildren().addAll(lblNom, fldNom);//lblRegexName
 
 		HBox hbPrenom = new HBox(hSpace);
-		hbPrenom.getChildren().addAll(lblPrenom, fldPrenom);
+		hbPrenom.getChildren().addAll(lblPrenom, fldPrenom);//lblRegexSurname
 
 		HBox hbDepartement = new HBox(hSpace);
 		hbDepartement.getChildren().addAll(lblDepartement, cbDepartement);
@@ -122,6 +129,13 @@ public class EditPanel extends BorderPane {
 //							cbAnnee.getSelectionModel().getSelectedItem());
 //					StagiaireDao.modifierStagiaire(stagiaireIndex, stagiaire);
 //				}
+//				if (REGEXLengthNom(fldPrenom.getText())) {
+//					lblRegexSurname.setVisible(true);
+//				}
+//				if (REGEXLengthPrenom(fldNom.getText())) {
+//					lblRegexSurname.setVisible(true);
+//				}
+			
 				MainPanel root = new MainPanel();
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
@@ -142,7 +156,34 @@ public class EditPanel extends BorderPane {
 				stage.setScene(scene1);
 			}
 		});
+		
+		
 
 	}
-
+	
+//	public static final String NAME_REGEX = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
+//    public static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
+//	public boolean REGEXLengthNom(String nom) {
+//		if (nom.length() > 24) {
+//			return true;
+////		} else if (NAME_PATTERN.matcher(nom).matches()) {
+////			return true;
+//		} else if (nom.length() == 0) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
+//
+//	public boolean REGEXLengthPrenom(String prenom) {
+//		if (prenom.length() > 24) {
+//			return true;
+////		} else if (NAME_PATTERN.matcher(prenom).matches()) {
+////			return true;
+//		} else if (nom.length() == 0) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 }
