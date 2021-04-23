@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 public class EditPanel extends BorderPane {
 
+
 	private Label lblNom = new Label("Nom du stagiaire :");
 	private Label lblPrenom = new Label("PrÃ©nom du stagiaire :");
 	private Label lblDepartement = new Label("DÃ©partement :");
@@ -27,30 +28,39 @@ public class EditPanel extends BorderPane {
 //	private Label lblRegexName = new Label("Votre nom est incorrecte");
 //	private Label lblRegexSurname = new Label("Votre prenom est incorrecte");
 
-	private ObservableList<String> observableDepartements = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6",
+	private Label lblLastName = new Label("Nom du student :");
+	private Label lblFirstName = new Label("Prénom du student :");
+	private Label lblZipCode = new Label("Département :");
+	private Label lblPromo = new Label("Promotion");
+	private Label lblYear = new Label("Année");
+
+
+	private ObservableList<String> observableZipCodes = FXCollections.observableArrayList("1", "2", "3", "4", "5", "6",
 			"7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
 			"25");
 
 	private ObservableList<String> observablePromos = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "10");
 
-	private ObservableList<String> observableAnnees = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
+	private ObservableList<String> observableYears = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "10");
 
 	
 	public String nom, prenom, departement, promotion, annee = "";
-	private TextField fldNom = new TextField(nom);
-	private TextField fldPrenom = new TextField(prenom);
-	private ComboBox<String> cbDepartement = new ComboBox<String>(observableDepartements);
-	private ComboBox<String> cbPromotion = new ComboBox<String>(observablePromos);
-	private ComboBox<String> cbAnnee = new ComboBox<String>(observableAnnees);
+	private TextField fldLastName = new TextField(nom);
+	private TextField fldFirstName = new TextField(prenom);
+	private ComboBox<String> cbZipCode = new ComboBox<String>(observableZipCodes);
+	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos);
+	private ComboBox<String> cbYear = new ComboBox<String>(observableYears);
 	
 
-	private Button btSauv = new Button("Ajouter le stagiaire");
-	private Button btAnnul = new Button("Annuler");
+	private Button saveButton = new Button("Ajouter le student");
+	private Button cancelButton = new Button("Annuler");
 
-	public EditPanel(String winMode, int stagiaireIndex, Student stagiaire) {
-		setPrefSize(500, 300);
+
+	public EditPanel(String winMode, int studentIndex, Student student) {
+		setPrefSize(350, 200);
+
 
 		// setMaxWidth(300);
 		// setMaxHeight(200);
@@ -61,7 +71,7 @@ public class EditPanel extends BorderPane {
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
 
-		Label headerTitle = new Label("Ajouter un stagiaire");
+		Label headerTitle = new Label("Ajouter un student");
 		headerTitle.setMinHeight(50);
 		headerTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 		header.getChildren().add(headerTitle);
@@ -71,63 +81,71 @@ public class EditPanel extends BorderPane {
 		middle.getChildren().add(form);
 		int hSpace = 20;
 
+
 		HBox hbNom = new HBox(hSpace);
-		hbNom.getChildren().addAll(lblNom, fldNom);//lblRegexName
+		hbNom.getChildren().addAll(lblNom, fldLastName);//lblRegexName
 
 		HBox hbPrenom = new HBox(hSpace);
-		hbPrenom.getChildren().addAll(lblPrenom, fldPrenom);//lblRegexSurname
+		hbPrenom.getChildren().addAll(lblPrenom, fldFirstName);//lblRegexSurname
 
-		HBox hbDepartement = new HBox(hSpace);
-		hbDepartement.getChildren().addAll(lblDepartement, cbDepartement);
+		HBox hbLastName = new HBox(hSpace);
+		hbLastName.getChildren().addAll(lblLastName, fldLastName);
 
-		HBox hbPromotion = new HBox(hSpace);
-		hbPromotion.getChildren().addAll(lblPromotion, cbPromotion);
+		HBox hbFirstName = new HBox(hSpace);
+		hbFirstName.getChildren().addAll(lblFirstName, fldFirstName);
 
-		HBox hbAnnee = new HBox(hSpace);
-		hbAnnee.getChildren().addAll(lblAnnee, cbAnnee);
+
+		HBox hbZipCode = new HBox(hSpace);
+		hbZipCode.getChildren().addAll(lblZipCode, cbZipCode);
+
+		HBox hbPromo = new HBox(hSpace);
+		hbPromo.getChildren().addAll(lblPromo, cbPromo);
+
+		HBox hbYear = new HBox(hSpace);
+		hbYear.getChildren().addAll(lblYear, cbYear);
 
 		HBox hbBoutons = new HBox(50);
 		hbBoutons.setMinHeight(100);
-		hbBoutons.getChildren().addAll(btSauv, btAnnul);
+		hbBoutons.getChildren().addAll(saveButton, cancelButton);
 		hbBoutons.setAlignment(Pos.CENTER);
 
 		Pos hbAlign = Pos.BASELINE_RIGHT;
-		hbNom.setAlignment(hbAlign);
-		hbPrenom.setAlignment(hbAlign);
-		hbDepartement.setAlignment(hbAlign);
-		hbPromotion.setAlignment(hbAlign);
-		hbAnnee.setAlignment(hbAlign);
+		hbLastName.setAlignment(hbAlign);
+		hbFirstName.setAlignment(hbAlign);
+		hbZipCode.setAlignment(hbAlign);
+		hbPromo.setAlignment(hbAlign);
+		hbYear.setAlignment(hbAlign);
 		middle.setAlignment(Pos.CENTER);
-		form.getChildren().addAll(hbNom, hbPrenom, hbDepartement, hbPromotion, hbAnnee);
+		form.getChildren().addAll(hbLastName, hbFirstName, hbZipCode, hbPromo, hbYear);
 
 		setTop(header);
 		setCenter(middle);
 		setBottom(hbBoutons);
 
-//		if (winMode == "edit") {
-//			headerTitle.setText("Modifier une sÃ©rie");
-//			btSauv.setText("Confirmer la modification");
-//			fldNom.setText(stagiaire.getNom());
-//			fldPrenom.setText(stagiaire.getPrenomSortie());
-//			cbDepartement.getSelectionModel().select(stagiaire.getNbSaisons());
-//			fldPromotion.setText(stagiaire.getMaisonProd());
-//			cbAnnee.getSelectionModel().select(stagiaire.getNote());
-//		}
+		if (winMode == "edit") {
+			headerTitle.setText("Modifier un student");
+			saveButton.setText("Confirmer la modification");
+			fldLastName.setText(student.getLastName());
+			fldFirstName.setText(student.getFirstName());
+			cbZipCode.getSelectionModel().select(student.getZipCode());
+			cbPromo.getSelectionModel().select(student.getPromo());
+			cbYear.getSelectionModel().select(student.getYear());
+		}
 
-		btSauv.setOnAction(new EventHandler<ActionEvent>() {
+		saveButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 //				if (winMode == "add") {
-//					Stagiaire stagiaire = new Stagiaire(fldNom.getText(), fldPrenom.getText(),
-//							cbDepartement.getSelectionModel().getSelectedItem(), cbPromotion.getSelectionModel().getSelectedItem(),
-//							cbAnnee.getSelectionModel().getSelectedItem());
-//					StagiaireDao.ajouterStagiaire(stagiaire);
+//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
+//							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
+//							cbYear.getSelectionModel().getSelectedItem());
+//					StagiaireDao.ajouterStagiaire(student);
 //				} else if (winMode == "edit") {
-//					Stagiaire stagiaire = new Stagiaire(fldNom.getText(), fldPrenom.getText(),
-//							cbDepartement.getSelectionModel().getSelectedItem(), cbPromotion.getSelectionModel().getSelectedItem(),
-//							cbAnnee.getSelectionModel().getSelectedItem());
-//					StagiaireDao.modifierStagiaire(stagiaireIndex, stagiaire);
+//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
+//							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
+//							cbYear.getSelectionModel().getSelectedItem());
+//					StagiaireDao.modifierStagiaire(studentIndex, student);
 //				}
 //				if (REGEXLengthNom(fldPrenom.getText())) {
 //					lblRegexSurname.setVisible(true);
@@ -145,7 +163,7 @@ public class EditPanel extends BorderPane {
 			}
 		});
 
-		btAnnul.setOnAction(new EventHandler<ActionEvent>() {
+		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {

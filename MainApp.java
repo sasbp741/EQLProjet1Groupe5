@@ -108,6 +108,7 @@ public class MainApp extends Application {
 		}
 	}
 
+
 	static void addNewStudentToTreeRecursive(int index, String name, RandomAccessFile raf, int indexNewFile) throws IOException {
 		String addName = getStudentString(index, raf);
 		String SAD = getStudentSAD(index, raf);
