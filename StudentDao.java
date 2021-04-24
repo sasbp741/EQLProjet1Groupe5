@@ -16,7 +16,7 @@ public class StudentDao {
 	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
 
-	int entriesNumber = 1330;
+	int entriesNumber = 1314;
 	int SEQUENCE_LENGTH = 81;
 	static int[] maxLength = new int[] {21,20,2,10,4};
 	private static String spaceChar = " ";

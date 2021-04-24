@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -135,16 +136,26 @@ public class MainPanel extends BorderPane {
 		firstNameCol.setPrefWidth(120);
 
 		studentTable.getColumns().addAll(lastNameCol, firstNameCol, zipCodeCol, classCol, yearCol);
+		studentTable.prefWidthProperty().bind(mainPan.widthProperty());
+		studentTable.prefHeightProperty().bind(mainPan.heightProperty());
+
+
+		//SearchingStudent filter
+		FilteredList<Student> searchingStudent = new FilteredList<Student>(observableStudents);
+		searchField.textProperty().addListener((observable, oldValue, newValue) -> {searchingStudent.setPredicate(student -> {
+			return searchingStudentCondition(newValue, student); 
+		});
+		});
 
 		//TableView Automatically Ascending Sorted by LastName then FirstName then YearCol(Descending)
-		SortedList<Student> sortedData = new SortedList<>(observableStudents);
+		SortedList<Student> sortedData = new SortedList<>(searchingStudent);
 		sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
 		studentTable.setItems(sortedData);
 		yearCol.setSortType(SortType.DESCENDING);
 		studentTable.getSortOrder().addAll(lastNameCol,firstNameCol,yearCol) ;
 
-		studentTable.prefWidthProperty().bind(mainPan.widthProperty());
-		studentTable.prefHeightProperty().bind(mainPan.heightProperty());
+
+
 
 		AnchorPane listPan = new AnchorPane();
 		AnchorPane.setTopAnchor(studentTable, 5.);
@@ -226,6 +237,19 @@ public class MainPanel extends BorderPane {
 		});
 
 
+	}
+
+	private boolean searchingStudentCondition(String newValue, Student student) {
+		//null : display all // true = match found // false = doesnt match	
+		if (newValue == null || newValue.isEmpty()) { 
+			return true;
+		}
+		String lowerCaseFilter = newValue.toLowerCase();
+		if (student.getLastName().toLowerCase().indexOf(lowerCaseFilter) != -1 ) {
+			return true; 
+		} 
+		else  
+			return false;
 	}
 
 	private void addStudentPanel() {
