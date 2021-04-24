@@ -10,19 +10,19 @@ import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-import java.io.IOException;
-
 
 public class StudentDao {
+	
 	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
 
-	int entriesNumber = 1318;
+	int entriesNumber = 1330;
 	int SEQUENCE_LENGTH = 81;
 	static int[] maxLength = new int[] {21,20,2,10,4};
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
 
+	
 	public List<Student> loadStudentFile() {
 		studentList.clear();
 		RandomAccessFile raf = null;
@@ -79,12 +79,14 @@ public class StudentDao {
 		return sb.toString();
 	}
 
-	public static void addStudent(Student student) {
+	// use of RAF?, to be confirmed-------------------------------
+	public static void addStudent(Student student) { 
 		String chaine = studentToString(student) ;
 		try {
 			FileWriter fileAdd = new FileWriter(destinationPath,true) ;
 			byte[] b = chaine.getBytes();
 			fileAdd.write(chaine);
+			//entriesNumber++;
 			fileAdd.close();
 		} catch (IOException e) {
 			e.printStackTrace();

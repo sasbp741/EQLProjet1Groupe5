@@ -1,21 +1,16 @@
 package fr.eql.ai109.projet1;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-// ------------ AJOUT
-import java.util.LinkedList;
-import java.util.Queue;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class MainApp extends Application {
-
-
 
 	private static String originalPath = "c:/projet1/stagiaires.txt";
 	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
@@ -64,8 +59,6 @@ public class MainApp extends Application {
 		//addNewStudentToTree();
 		//displayNames();
 
-
-
 	}
 
 	//----------------- AJOUT
@@ -98,7 +91,6 @@ public class MainApp extends Application {
 					System.out.println("pas de lancement");
 				}
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -141,7 +133,6 @@ public class MainApp extends Application {
 	private static void writeChildren() {
 		File dest = new File(destinationPath);
 		RandomAccessFile raf = null;
-
 		try {
 			raf = new RandomAccessFile(dest, "rw");
 			dichotomousWriteChildren(0, entriesNumber, raf);
@@ -188,7 +179,6 @@ public class MainApp extends Application {
 				isWritten[SAG][2] = true;
 				return true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -204,7 +194,6 @@ public class MainApp extends Application {
 				isWritten[SAD][2] = true;
 				return true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

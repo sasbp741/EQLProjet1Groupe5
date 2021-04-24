@@ -1,47 +1,48 @@
 package fr.eql.ai109.projet1;
 
 import java.util.Optional;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class MainPanel extends BorderPane {
 
 	private StudentDao dao = new StudentDao();
 	private ObservableList<Student> observableStudents ;
-	
+
 	public String winMode = "";
 	private Button addButton = new Button("Ajouter un stagiaire");
 	private Button editButton = new Button("Modifier le stagiaire");
 	private Button delButton = new Button("Supprimer le stagiaire");
 	public static String iconDir = "C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/";
 
-	
+
 	final Menu File = new Menu("Fichier");
 	final Menu Edition = new Menu("Edition");
 	final Menu Mode = new Menu("Mode");
@@ -92,11 +93,11 @@ public class MainPanel extends BorderPane {
 		Button searchButton = new Button("OK");
 		searchButton.setMinWidth(35);
 
-//		File icone = new File("C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/search.png");
-//		System.out.println(icone.exists());
-//		Image image = new Image("C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/icons/search.png");
-//		ImageView view = new ImageView(image);
-//		searchButton.setGraphic(view);
+		//		File icone = new File("C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/search.png");
+		//		System.out.println(icone.exists());
+		//		Image image = new Image("C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/icons/search.png");
+		//		ImageView view = new ImageView(image);
+		//		searchButton.setGraphic(view);
 
 		Button advSearchButton = new Button("Recherche avancée...");
 		advSearchButton.setMinWidth(130);
@@ -107,9 +108,9 @@ public class MainPanel extends BorderPane {
 
 		// ListPan
 
-		
+
 		observableStudents = FXCollections.observableArrayList(dao.loadStudentFile());
-		
+
 		TableView<Student> studentTable = new TableView<Student>(observableStudents);
 
 		TableColumn<Student, String> lastNameCol = new TableColumn<Student, String>("Nom");
@@ -134,9 +135,14 @@ public class MainPanel extends BorderPane {
 		firstNameCol.setPrefWidth(120);
 
 		studentTable.getColumns().addAll(lastNameCol, firstNameCol, zipCodeCol, classCol, yearCol);
-		studentTable.getSortOrder().add(lastNameCol);
-		lastNameCol.setSortType(TableColumn.SortType.ASCENDING);
-		studentTable.sort(); 
+
+		//TableView Automatically Ascending Sorted by LastName then FirstName then YearCol(Descending)
+		SortedList<Student> sortedData = new SortedList<>(observableStudents);
+		sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
+		studentTable.setItems(sortedData);
+		yearCol.setSortType(SortType.DESCENDING);
+		studentTable.getSortOrder().addAll(lastNameCol,firstNameCol,yearCol) ;
+
 		studentTable.prefWidthProperty().bind(mainPan.widthProperty());
 		studentTable.prefHeightProperty().bind(mainPan.heightProperty());
 
@@ -162,11 +168,11 @@ public class MainPanel extends BorderPane {
 		this.setCenter(mainPan);
 		this.setBottom(buttonBox);
 
-		
-		// EVENTS
-		
+
+		// EVENTS--------------------------------------------------------------------------------------
+
 		// Events menu
-		
+
 		add.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -175,14 +181,14 @@ public class MainPanel extends BorderPane {
 			}
 
 		});
-		
+
 		addButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				addStudentPanel();
-				
-				
+
+
 			}
 
 		});
@@ -218,8 +224,8 @@ public class MainPanel extends BorderPane {
 				delButton.setDisable(false);
 			}
 		});
-		
-		
+
+
 	}
 
 	private void addStudentPanel() {
@@ -230,7 +236,7 @@ public class MainPanel extends BorderPane {
 
 		stage.setScene(scene2);
 	}
-	
+
 	public void switchUserMode(String userMode) {
 		if (userMode.equals("admin")) {
 			userMode = "user";
@@ -249,7 +255,7 @@ public class MainPanel extends BorderPane {
 			result.ifPresent(name -> System.out.println("Your name: " + name));
 		}
 	}
-	
+
 	//-----------------------------------------GET&SET 
 	public ObservableList<Student> getObservableStudents() {
 		return observableStudents;
@@ -262,6 +268,6 @@ public class MainPanel extends BorderPane {
 	public void setDao(StudentDao dao) {
 		this.dao = dao;
 	}
-	
-	
+
+
 }

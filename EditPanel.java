@@ -1,6 +1,6 @@
 package fr.eql.ai109.projet1;
 
-import java.util.regex.Pattern;
+import java.time.Year;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,14 +19,14 @@ import javafx.stage.Stage;
 
 public class EditPanel extends BorderPane {
 
-
+	//Attention aux accents/encodage
 	private Label lblNom = new Label("Nom du stagiaire :");
 	private Label lblPrenom = new Label("PrÃ©nom du stagiaire :");
 	private Label lblDepartement = new Label("DÃ©partement :");
 	private Label lblPromotion = new Label("Promotion");
 	private Label lblAnnee = new Label("AnnÃ©e");
-//	private Label lblRegexName = new Label("Votre nom est incorrecte");
-//	private Label lblRegexSurname = new Label("Votre prenom est incorrecte");
+	//	private Label lblRegexName = new Label("Votre nom est incorrecte");
+	//	private Label lblRegexSurname = new Label("Votre prenom est incorrecte");
 
 	private Label lblLastName = new Label("Nom du student :");
 	private Label lblFirstName = new Label("Prénom du student :");
@@ -36,33 +36,26 @@ public class EditPanel extends BorderPane {
 
 
 	private ObservableList<String> observableZipCodes = FXCollections.observableArrayList(
-		//Departement français
-			"01" , "02" , "03" , "04" , "05" , "06" , "07" , "08" , "09" , 	"10" , "11" , "12" , "13" , "14" , "15" , "16" , "17" , "18" , "19" , "21" , "22" , "23" , "24" , "25" , "26" , "27" , "28" , "29" , 	"30" , "31" , "32" , "33" , "34" , "35" , "36" , "37" , "38" , "39" , 
-			"40" , "41" , "42" , "43" , "44" , "45" , "46" , "47" , "48" , "49" , "50" , "51" , "52" , "53" , "54" , "55" , "56" , "57" , "58" , "59" , 	"60" , "61" , "62" , "63" , "64" , "65" , "66" , "67" , "68" , "69" , 			"70" , "71" , "72" , "73" , "74" , "75" , "76" , "77" , "78" , "79" , "80" , "81" , "82" , "83" , "84" , "85" , "86" , "87" , "88" , "89" , "90" , "91" , "92" , "93" , "94" , "95" , "2A" , "2B" , "971" , "972" , "973" , "974" , "976",
-		//Code Pays?
-			"AE" , "AF" , "AG" , "AI" , "AL" , "AM" , "AN" , "AO" , "AQ" , "AR" , "AS" , "AT" , "AU" , "AW" , "AX" , "AZ" ,  "BA" , "BB" , "BD" , "BE" , "BF" , "BG" , "BH" , "BI" , "BJ" , "BM" , "BN" , "BO" , "BR" , "BS" , "BT" , "BV" , "BW" , "BY" , "BZ" , "CA" , "CC" , "CD" , "CF" , "CG" , "CH" , "CI" , "CK" , "CL" , "CM" , "CN" , "CO" , "CR" , "CS" , "CU" , "CV" , "CX" , "CY" , "CZ" , 	"DE" , "DJ" , "DK" , "DM" , "DO" , "DZ" ,  "EC" , "EE" , "EG" , "EH" , "ER" , "ES" , "ET" , "FI" , "FJ" , "FK" , "FM" , "FO" , "FR" , 	"GA" , "GB" , "GD" , "GE" , "GF" , "GH" , "GI" , "GL" , "GM" , "GN" , "GP" , "GQ" , "GR" , "GS" , "GT" , "GU" , "GW" , "GY" , "HK" , "HM" , "HN" , "HR" , "HT" , "HU" , "ID" , "IE" , "IL" , "IM" , "IN" , "IO" , "IQ" , "IR" , "IS" , "IT" , 	
-			"JM" , "JO" , "JP" , "KE" , "KG" , "KH" , "KI" , "KM" , "KN" , "KP" , "KR" , "KW" , "KY" , "KZ" , 	"LA" , "LB" , "LC" , "LI" , "LK" , "LR" , "LS" , "LT" , "LU" , "LV" , "LY" , "MA" , "MC" , "MD" , "MG" , "MH" , "MK" , "ML" , "MM" , "MN" , "MO" , "MP" , "MQ" , "MR" , "MS" , "MT" , "MU" , "MV" , "MW" , "MX" , "MY" , "MZ" , "NA" , "NC" , "NE" , "NF" , "NG" , "NI" , "NL" , "NO" , "NP" , "NR" , "NU" , "NZ" , 	"OM" , 	"PA" , "PE" , "PF" , "PG" , "PH" , "PK" , "PL" , "PM" , "PN" , "PR" , "PS" , "PT" , "PW" , "PY" , "QA" , 	"RE" , "RO" , "RU" , "RW" , "SA" , "SB" , "SC" , "SD" , "SE" , "SG" , "SH" , "SI" , "SJ" , "SK" , "SL" , "SM" , "SN" , "SO" , "SR" , "ST" , "SV" , "SY" , "SZ" , "TC" , "TD" , "TF" , "TG" , "TH" , "TJ" , "TK" , "TL" , "TM" , "TN" , "TO" , "TR" , "TT" , "TV" , "TW" , "TZ" , "UA" , "UG" , "UM" , "US" , "UY" , "UZ" , "VA" , "VC" , "VE" , "VG" , "VI" , "VN" , "VU" , "WF" , "WS" , "YE" , "YT" , "ZA" , "ZM" , "ZW" , "ZM" 
-			);
-	
-	
-	
-	//utilité de l'observablePromos à voir car cbox seulement dans editStudent
-	private ObservableList<String> observablePromos = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
-			"6", "7", "8", "9", "10");
-	
-	private ObservableList<String> observableYears = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5",
-			"6", "7", "8", "9", "10");
+		//French Departements
+		"01" , "02" , "03" , "04" , "05" , "06" , "07" , "08" , "09" , 	"10" , "11" , "12" , "13" , "14" , "15" , "16" , "17" , "18" , "19" , "21" , "22" , "23" , "24" , "25" , "26" , "27" , "28" , "29" , 	"30" , "31" , "32" , "33" , "34" , "35" , "36" , "37" , "38" , "39" , 
+		"40" , "41" , "42" , "43" , "44" , "45" , "46" , "47" , "48" , "49" , "50" , "51" , "52" , "53" , "54" , "55" , "56" , "57" , "58" , "59" , 	"60" , "61" , "62" , "63" , "64" , "65" , "66" , "67" , "68" , "69" , 			"70" , "71" , "72" , "73" , "74" , "75" , "76" , "77" , "78" , "79" , "80" , "81" , "82" , "83" , "84" , "85" , "86" , "87" , "88" , "89" , "90" , "91" , "92" , "93" , "94" , "95" , "2A" , "2B" , "971" , "972" , "973" , "974" , "976",
+		//Country ISO code
+		"AE" , "AF" , "AG" , "AI" , "AL" , "AM" , "AN" , "AO" , "AQ" , "AR" , "AS" , "AT" , "AU" , "AW" , "AX" , "AZ" ,  "BA" , "BB" , "BD" , "BE" , "BF" , "BG" , "BH" , "BI" , "BJ" , "BM" , "BN" , "BO" , "BR" , "BS" , "BT" , "BV" , "BW" , "BY" , "BZ" , "CA" , "CC" , "CD" , "CF" , "CG" , "CH" , "CI" , "CK" , "CL" , "CM" , "CN" , "CO" , "CR" , "CS" , "CU" , "CV" , "CX" , "CY" , "CZ" , 	"DE" , "DJ" , "DK" , "DM" , "DO" , "DZ" ,  "EC" , "EE" , "EG" , "EH" , "ER" , "ES" , "ET" , "FI" , "FJ" , "FK" , "FM" , "FO" , "FR" , 	"GA" , "GB" , "GD" , "GE" , "GF" , "GH" , "GI" , "GL" , "GM" , "GN" , "GP" , "GQ" , "GR" , "GS" , "GT" , "GU" , "GW" , "GY" , "HK" , "HM" , "HN" , "HR" , "HT" , "HU" , "ID" , "IE" , "IL" , "IM" , "IN" , "IO" , "IQ" , "IR" , "IS" , "IT" , 	
+		"JM" , "JO" , "JP" , "KE" , "KG" , "KH" , "KI" , "KM" , "KN" , "KP" , "KR" , "KW" , "KY" , "KZ" , 	"LA" , "LB" , "LC" , "LI" , "LK" , "LR" , "LS" , "LT" , "LU" , "LV" , "LY" , "MA" , "MC" , "MD" , "MG" , "MH" , "MK" , "ML" , "MM" , "MN" , "MO" , "MP" , "MQ" , "MR" , "MS" , "MT" , "MU" , "MV" , "MW" , "MX" , "MY" , "MZ" , "NA" , "NC" , "NE" , "NF" , "NG" , "NI" , "NL" , "NO" , "NP" , "NR" , "NU" , "NZ" , 	"OM" , 	"PA" , "PE" , "PF" , "PG" , "PH" , "PK" , "PL" , "PM" , "PN" , "PR" , "PS" , "PT" , "PW" , "PY" , "QA" , 	"RE" , "RO" , "RU" , "RW" , "SA" , "SB" , "SC" , "SD" , "SE" , "SG" , "SH" , "SI" , "SJ" , "SK" , "SL" , "SM" , "SN" , "SO" , "SR" , "ST" , "SV" , "SY" , "SZ" , "TC" , "TD" , "TF" , "TG" , "TH" , "TJ" , "TK" , "TL" , "TM" , "TN" , "TO" , "TR" , "TT" , "TV" , "TW" , "TZ" , "UA" , "UG" , "UM" , "US" , "UY" , "UZ" , "VA" , "VC" , "VE" , "VG" , "VI" , "VN" , "VU" , "WF" , "WS" , "YE" , "YT" , "ZA" , "ZM" , "ZW" , "ZM" );
 
-	
-		
+	//utilité de l'observablePromos à voir pour cbox seulement dans editStudent ?
+	private ObservableList<String> observablePromos = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5","6", "7", "8", "9", "10");
+
+	private ObservableList<String> observableYears = FXCollections.observableArrayList(comboBoxYearRange());
+
 	public String nom, prenom, departement, promotion, annee = "";
 	private TextField fldLastName = new TextField(nom);
 	private TextField fldFirstName = new TextField(prenom);
 	private TextField fldPromo = new TextField(promotion); // to addStudent
 	private ComboBox<String> cbZipCode = new ComboBox<String>(observableZipCodes);
-	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos); // to editStudent
+	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos); //not used at the moment, editStudent?
 	private ComboBox<String> cbYear = new ComboBox<String>(observableYears);
-		
+
 	private Button saveButton = new Button("Ajouter le student");
 	private Button cancelButton = new Button("Annuler");
 
@@ -73,9 +66,9 @@ public class EditPanel extends BorderPane {
 
 		// setMaxWidth(300);
 		// setMaxHeight(200);
-		
-//		lblRegexName.setVisible(false);
-//		lblRegexSurname.setVisible(false);
+
+		//		lblRegexName.setVisible(false);
+		//		lblRegexSurname.setVisible(false);
 
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
@@ -102,11 +95,11 @@ public class EditPanel extends BorderPane {
 
 		HBox hbFirstName = new HBox(hSpace);
 		hbFirstName.getChildren().addAll(lblFirstName, fldFirstName);
-		
+
 		HBox hbPromo = new HBox(hSpace);
 		hbPromo.getChildren().addAll(lblPromo, fldPromo);
-	//	fldPromo.setMaxWidth(100.);
-		
+		//	fldPromo.setMaxWidth(100.);
+
 		HBox hbZipCode = new HBox(hSpace);
 		hbZipCode.getChildren().addAll(lblZipCode, cbZipCode);
 
@@ -145,37 +138,37 @@ public class EditPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-								
+
 				String lastName =  fldLastName.getText().toUpperCase();
-				String firstName = capitalizeString(fldFirstName.getText()) ;
+				String firstName = capitalizeWords(fldFirstName.getText()) ;
 				String zipCode = cbZipCode.getSelectionModel().getSelectedItem() ;
 				String promo = fldPromo.getText().toUpperCase() ;
 				String year = cbYear.getSelectionModel().getSelectedItem();
 				Student studentGetTextField = new Student (lastName, firstName, zipCode, promo, year) ;
 
-//				if (winMode == "add") {
-//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
-//							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
-//							cbYear.getSelectionModel().getSelectedItem());
-//					StagiaireDao.ajouterStagiaire(student);
-//				} else if (winMode == "edit") {
-//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
-//							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
-//							cbYear.getSelectionModel().getSelectedItem());
-//					StagiaireDao.modifierStagiaire(studentIndex, student);
-//				}
-//				if (REGEXLengthNom(fldPrenom.getText())) {
-//					lblRegexSurname.setVisible(true);
-//				}
-//				if (REGEXLengthPrenom(fldNom.getText())) {
-//					lblRegexSurname.setVisible(true);
-//				}
-			
+				//				if (winMode == "add") {
+				//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
+				//							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
+				//							cbYear.getSelectionModel().getSelectedItem());
+				//					StagiaireDao.ajouterStagiaire(student);
+				//				} else if (winMode == "edit") {
+				//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
+				//							cbZipCode.getSelectionModel().getSelectedItem(), cbPromo.getSelectionModel().getSelectedItem(),
+				//							cbYear.getSelectionModel().getSelectedItem());
+				//					StagiaireDao.modifierStagiaire(studentIndex, student);
+				//				}
+				//				if (REGEXLengthNom(fldPrenom.getText())) {
+				//					lblRegexSurname.setVisible(true);
+				//				}
+				//				if (REGEXLengthPrenom(fldNom.getText())) {
+				//					lblRegexSurname.setVisible(true);
+				//				}
+
 				MainPanel root = new MainPanel();
-				
+
 				root.getObservableStudents().add(studentGetTextField) ;
 				StudentDao.addStudent(studentGetTextField);
-				
+
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
 
@@ -195,24 +188,39 @@ public class EditPanel extends BorderPane {
 				stage.setScene(scene1);
 			}
 		});
-		
-		
+
+
 
 	}
-	
-	public static String capitalizeString(String string) { 
+
+	public static String capitalizeWords(String string) { 
 		char[] chars = string.toLowerCase().toCharArray(); 
 		boolean found = false; 
 		for (int i = 0; i < chars.length; i++) { 
 			if (!found && Character.isLetter(chars[i])) { 
 				chars[i] = Character.toUpperCase(chars[i]); 
 				found = true; 
-				} else if (Character.isWhitespace(chars[i]) || chars[i]=='.' || chars[i]=='\'' || chars[i]=='-'  || chars[i]==' ') {
-					found = false; 
-					}
-					}
+			} else if (Character.isWhitespace(chars[i]) || chars[i]=='.' || chars[i]=='\'' || chars[i]=='-'  || chars[i]==' ') { 
+				found = false; 
+			}
+		}
 		return String.valueOf(chars); 
 	}
+
+	public String[] comboBoxYearRange() {    
+		Year startDate = Year.now().minusYears(20);  //magic number memo pour refacto //si valeur de départ fixe : Year.of(2002)
+		Year endDate   = Year.now().plusYears(10);   //magic number memo pour refacto
+		Year dateCalculate = startDate ;
+		String yearList[] = new String[30]; //magic number memo pour refacto 20+10 =30
+		while(dateCalculate.isBefore(endDate)){
+			for(int i = 0 ; i < yearList.length ; i++) {
+				dateCalculate = dateCalculate.plusYears(1) ;
+				yearList[i]=dateCalculate.toString() ;
+			}
+		}
+		return yearList;
+	}
+
 
 	public TextField getFldLastName() {
 		return fldLastName;
@@ -229,7 +237,7 @@ public class EditPanel extends BorderPane {
 	public void setFldFirstName(TextField fldFirstName) {
 		this.fldFirstName = fldFirstName;
 	}
-	
+
 	public TextField getFldPromo() {
 		return fldPromo;
 	}
