@@ -65,8 +65,8 @@ public class LoadingPanel extends Application {
         steps.setVgap(5);
         
         Label step1 = new Label("Importation du fichier source...");
-        Label step2 = new Label("Création de l'annuaire");
-        Label step3 = new Label("Tri des données");
+        Label step2 = new Label("Crï¿½ation de l'annuaire");
+        Label step3 = new Label("Tri des donnï¿½es");
         Label step4 = new Label("Optimisation de la recherche");
         
         steps.add(progressIndicator,0,0);
@@ -98,5 +98,6 @@ public class LoadingPanel extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
 
 }
