@@ -1,23 +1,20 @@
 package fr.eql.ai109.projet1;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-// ------------ AJOUT
-import java.util.LinkedList;
-import java.util.Queue;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-	private static String originalPath = "C:\\Users\\formation\\Documents\\COURS_EQL\\Projet1\\stagiaires.txt";
-	private static String destinationPath = "C:\\Users\\formation\\Documents\\COURS_EQL\\Projet1\\stagiairesRaf.bin";
-	public static int[] maxLength = new int[7];
+	private static String originalPath = "c:/projet1/stagiaires.txt";
+	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
+	private static int[] maxLength = new int[7];
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
 	static File binFile = new File(destinationPath);
@@ -40,17 +37,17 @@ public class MainApp extends Application {
 
 	public static void main(String[] args) {
 
-		definemaxLength(maxLength);
-		showmaxLength(maxLength);
+//		definemaxLength(maxLength);
+		//showmaxLength(maxLength);
 
-				if (!binFile.exists()) {
-		writeDestinationFile();
-				}
+		//		if (!binFile.exists()) {
+//		writeDestinationFile();
+		//		}
 		//System.out.println(SEQUENCE_LENGTH);
 		//System.out.println(entriesNumber);
 
-		//sortTargetFile();
-		//writeChildren();
+//		sortTargetFile();
+//		writeChildren();
 		//		System.out.println("valeur du tableau " + isWritten[0][0]);
 		//
 		//		for (int i = 0; i < isWritten.length; i++) {
@@ -58,15 +55,14 @@ public class MainApp extends Application {
 		//		}
 
 		launch(args);
-		//addNewStudentToTree();
-		//displayNames();
-
+//		addNewStudentToTree(); //used on StudentDao.java addmethod not on Main
+//		displayNames();
 
 	}
 
 	//----------------- AJOUT
 	
-	public static void addNewStudentToTree() {
+	public static void addNewStudentToTree(int indexNewStudent) {
 		File dest = new File(destinationPath);
 		RandomAccessFile raf = null;
 		try {
@@ -74,7 +70,7 @@ public class MainApp extends Application {
 //			raf.seek(SEQUENCE_LENGTH * entriesNumber);
 //			raf.write("PHOMMA               Yasamine            92AI 94     2015                        ".getBytes());
 //			entriesNumber++;
-			int indexNewStudent = entriesNumber - 1;
+//			int indexNewStudent = entriesNumber - 1;
 			String newStudentName = getStudentString(indexNewStudent, raf).trim();
 			String medianName = getStudentString(657,raf).trim();
 			if (newStudentName.compareTo(medianName) >= 0) {
@@ -83,7 +79,7 @@ public class MainApp extends Application {
 					int indexSAD = Integer.parseInt(SAD);
 					addNewStudentToTreeRecursive(indexSAD, newStudentName, raf, indexNewStudent);
 				} else {
-					System.out.println("pas de lancement");
+//					System.out.println("pas de lancement");
 				}
 			} else {
 				String SAG = getStudentSAG(657, raf);
@@ -91,10 +87,9 @@ public class MainApp extends Application {
 					int indexSAG = Integer.parseInt(SAG);
 					addNewStudentToTreeRecursive(indexSAG, newStudentName, raf, indexNewStudent);
 				} else {
-					System.out.println("pas de lancement");
+//					System.out.println("pas de lancement");
 				}
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -137,7 +132,6 @@ public class MainApp extends Application {
 	private static void writeChildren() {
 		File dest = new File(destinationPath);
 		RandomAccessFile raf = null;
-
 		try {
 			raf = new RandomAccessFile(dest, "rw");
 			dichotomousWriteChildren(0, entriesNumber, raf);
@@ -184,7 +178,6 @@ public class MainApp extends Application {
 				isWritten[SAG][2] = true;
 				return true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -200,7 +193,6 @@ public class MainApp extends Application {
 				isWritten[SAD][2] = true;
 				return true;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
