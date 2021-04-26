@@ -1,16 +1,8 @@
 package fr.eql.ai109.projet1;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class MainApp extends Application {
 

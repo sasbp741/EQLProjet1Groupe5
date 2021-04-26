@@ -99,7 +99,7 @@ public class StudentDao {
 			raf.seek(SEQUENCE_LENGTH * entriesNumber);
 			byte[] b = chaine.getBytes();
 			raf.write(b);
-			addNewStudentToTree(entriesNumber) ; //to be confirmed, index of new student = entriesNumber+1 ? even when deleted? to be confirmed
+			addNewStudentToTree(entriesNumber) ; 
 			entriesNumber++;
 			writeSettings(6, entriesNumber);
 		} catch (IOException e) {

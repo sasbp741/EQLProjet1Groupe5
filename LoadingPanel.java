@@ -1,28 +1,14 @@
 package fr.eql.ai109.projet1;
 
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 public class LoadingPanel extends BorderPane {
 
@@ -58,8 +44,8 @@ public class LoadingPanel extends BorderPane {
                 steps.setVgap(5);
                 
                 Label step1 = new Label("Importation du fichier source...");
-                Label step2 = new Label("Création de l'annuaire...");
-                Label step3 = new Label("Tri des données...");
+                Label step2 = new Label("Crï¿½ation de l'annuaire...");
+                Label step3 = new Label("Tri des donnï¿½es...");
                 Label step4 = new Label("Optimisation de la recherche...");
                 
                 steps.add(progressIndicator,0,0);
@@ -78,7 +64,7 @@ public class LoadingPanel extends BorderPane {
         		this.setCenter(loader);
         		
         		
-        		// ------------- link bar de téléchargement
+        		// ------------- link bar de tï¿½lï¿½chargement
         		
         		
         		
