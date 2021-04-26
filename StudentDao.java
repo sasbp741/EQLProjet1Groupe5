@@ -1,28 +1,29 @@
 package fr.eql.ai109.projet1;
 
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 
 public class StudentDao {
-	
+
 	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
 
-	int entriesNumber = 1314;
-	int SEQUENCE_LENGTH = 81;
+	static int entriesNumber = 1314;
+	static int SEQUENCE_LENGTH = 81;
 	static int[] maxLength = new int[] {21,20,2,10,4};
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
 
-	
+
 	public List<Student> loadStudentFile() {
 		studentList.clear();
 		RandomAccessFile raf = null;
@@ -79,17 +80,27 @@ public class StudentDao {
 		return sb.toString();
 	}
 
-	// use of RAF?, to be confirmed-------------------------------
 	public static void addStudent(Student student) { 
 		String chaine = studentToString(student) ;
-		try {
-			FileWriter fileAdd = new FileWriter(destinationPath,true) ;
-			byte[] b = chaine.getBytes();
-			fileAdd.write(chaine);
-			//entriesNumber++;
-			fileAdd.close();
+		MainApp addMethode = new MainApp() ;
+		RandomAccessFile raf = null;			
+			try {
+				raf = new RandomAccessFile(destinationPath, "rw");
+				raf.seek(SEQUENCE_LENGTH * entriesNumber);
+				byte[] b = chaine.getBytes();
+				raf.write(b);
+				addMethode.addNewStudentToTree(entriesNumber+1) ; //to be confirmed, index of new student = entriesNumber+1 ? even when deleted? to be confirmed
+				entriesNumber++;
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				if (raf != null) {
+					raf.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -102,12 +113,17 @@ public class StudentDao {
 		return studentList.get(studentId);
 	}
 
-	public static void deleteStudent(int selectedIndex) {
+	public static boolean deleteStudentConfirmation(int selectedIndex) { //TODO : suppression dans le fichier binaire
 		Alert deleteStudentAlert = new Alert(AlertType.CONFIRMATION);
 		deleteStudentAlert.setTitle("Suppression d'un stagiaire");
 		deleteStudentAlert.setHeaderText("Vous allez supprimer le stagiaire suivant :\nNOM Prénom");
 		deleteStudentAlert.setContentText("Voulez-vous continuer ?");
 
-		deleteStudentAlert.showAndWait();
+		Optional<ButtonType> option = deleteStudentAlert.showAndWait();
+		if (!option.isPresent() || option.get() == ButtonType.OK){
+			return true ;
+		} else {
+			return false;
+		}
 	}
 }

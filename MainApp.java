@@ -56,14 +56,14 @@ public class MainApp extends Application {
 		//		}
 
 		launch(args);
-//		addNewStudentToTree();
+//		addNewStudentToTree(); //used on StudentDao.java addmethod not on Main
 //		displayNames();
 
 	}
 
 	//----------------- AJOUT
 	
-	public static void addNewStudentToTree() {
+	public static void addNewStudentToTree(int indexNewStudent) {
 		File dest = new File(destinationPath);
 		RandomAccessFile raf = null;
 		try {
@@ -71,7 +71,7 @@ public class MainApp extends Application {
 //			raf.seek(SEQUENCE_LENGTH * entriesNumber);
 //			raf.write("PHOMMA               Yasamine            92AI 94     2015                        ".getBytes());
 //			entriesNumber++;
-			int indexNewStudent = entriesNumber - 1;
+//			int indexNewStudent = entriesNumber - 1;
 			String newStudentName = getStudentString(indexNewStudent, raf).trim();
 			String medianName = getStudentString(657,raf).trim();
 			if (newStudentName.compareTo(medianName) >= 0) {
@@ -80,7 +80,7 @@ public class MainApp extends Application {
 					int indexSAD = Integer.parseInt(SAD);
 					addNewStudentToTreeRecursive(indexSAD, newStudentName, raf, indexNewStudent);
 				} else {
-					System.out.println("pas de lancement");
+//					System.out.println("pas de lancement");
 				}
 			} else {
 				String SAG = getStudentSAG(657, raf);
@@ -88,7 +88,7 @@ public class MainApp extends Application {
 					int indexSAG = Integer.parseInt(SAG);
 					addNewStudentToTreeRecursive(indexSAG, newStudentName, raf, indexNewStudent);
 				} else {
-					System.out.println("pas de lancement");
+//					System.out.println("pas de lancement");
 				}
 			}
 		} catch (IOException e) {

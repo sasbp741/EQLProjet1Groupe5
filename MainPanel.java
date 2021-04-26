@@ -222,10 +222,11 @@ public class MainPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-				StudentDao.deleteStudent(studentTable.getSelectionModel().getSelectedIndex());
-				studentTable.getItems().remove(studentTable.getSelectionModel().getSelectedIndex());
+				if (StudentDao.deleteStudentConfirmation(studentTable.getSelectionModel().getSelectedIndex())) {
+//					studentTable.getItems().remove(studentTable.getSelectionModel().getSelectedIndex());
+					observableStudents.remove(studentTable.getSelectionModel().getSelectedIndex());
 			}
-		});
+		}});
 
 		studentTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Student>() {
 
