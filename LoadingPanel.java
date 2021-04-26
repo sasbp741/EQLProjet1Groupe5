@@ -29,6 +29,7 @@ public class LoadingPanel extends BorderPane {
 //    	Image logo;
 //    	FileInputStream fis = null;
     	
+
     	public LoadingPanel() {
     		
     			StudentDao dao = new StudentDao();
@@ -85,24 +86,28 @@ public class LoadingPanel extends BorderPane {
         		progressBar.setProgress(0.25F);
         		//steps.add(progressIndicator,0,1);
 
+
         		if (!dao.binFile.exists()) {
         			dao.initiateSettingsfile();
 	        		dao.definemaxLength();
 	        		dao.showmaxLength();
 	        		dao.writeDestinationFile();
+	        		dao.sortTargetFile();
+	        		dao.writeChildren();
         		} else {
         			dao.loadSettings();
         		}
-        		progressBar.setProgress(0.50F);
+        		//progressBar.setProgress(0.50F);
         		//steps.add(progressIndicator,0,2);
         		//System.out.println(SEQUENCE_LENGTH);
         		//System.out.println(entriesNumber);
 
-        		dao.sortTargetFile();
-        		progressBar.setProgress(0.75F);
+
+        		
+        		//progressBar.setProgress(0.75F);
         		//steps.add(progressIndicator,0,3);
-        		dao.writeChildren();
-        		progressBar.setProgress(1.0F);
+        		
+        		//progressBar.setProgress(1.0F);
         		//System.out.println("valeur du tableau " + isWritten[0][0]);
         		//
         		//		for (int i = 0; i < isWritten.length; i++) {
