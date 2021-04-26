@@ -34,8 +34,7 @@ import javafx.stage.Stage;
 
 public class MainPanel extends BorderPane {
 
-	private StudentDao dao = new StudentDao();
-	private ObservableList<Student> observableStudents ;
+	private ObservableList<Student> observableStudents;
 
 	public String winMode = "";
 	private Button addButton = new Button("Ajouter un stagiaire");
@@ -51,7 +50,7 @@ public class MainPanel extends BorderPane {
 
 	@SuppressWarnings("unchecked")
 
-	public MainPanel() {
+	public MainPanel(StudentDao dao) {
 		setPrefSize(600, 450);
 
 		// Menu
@@ -141,18 +140,18 @@ public class MainPanel extends BorderPane {
 
 
 		//SearchingStudent filter
-		FilteredList<Student> searchingStudent = new FilteredList<Student>(observableStudents);
-		searchField.textProperty().addListener((observable, oldValue, newValue) -> {searchingStudent.setPredicate(student -> {
-			return searchingStudentCondition(newValue, student); 
-		});
-		});
+//		FilteredList<Student> searchingStudent = new FilteredList<Student>(observableStudents);
+//		searchField.textProperty().addListener((observable, oldValue, newValue) -> {searchingStudent.setPredicate(student -> {
+//			return searchingStudentCondition(newValue, student); 
+//		});
+//		});
 
 		//TableView Automatically Ascending Sorted by LastName then FirstName then YearCol(Descending)
-		SortedList<Student> sortedData = new SortedList<>(searchingStudent);
-		sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
-		studentTable.setItems(sortedData);
-		yearCol.setSortType(SortType.DESCENDING);
-		studentTable.getSortOrder().addAll(lastNameCol,firstNameCol,yearCol) ;
+//		SortedList<Student> sortedData = new SortedList<>(searchingStudent);
+//		sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
+//		studentTable.setItems(sortedData);
+//		yearCol.setSortType(SortType.DESCENDING);
+//		studentTable.getSortOrder().addAll(lastNameCol,firstNameCol,yearCol) ;
 
 
 
@@ -188,7 +187,7 @@ public class MainPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-				addStudentPanel();
+				addStudentPanel(dao);
 			}
 
 		});
@@ -197,7 +196,7 @@ public class MainPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-				addStudentPanel();
+				addStudentPanel(dao);
 
 
 			}
@@ -210,7 +209,7 @@ public class MainPanel extends BorderPane {
 			public void handle(ActionEvent event) {
 				winMode = "edit";
 				int nbStudentModif = studentTable.getSelectionModel().getSelectedIndex();
-				EditPanel root = new EditPanel(winMode, nbStudentModif, dao.getStudent(nbStudentModif));
+				EditPanel root = new EditPanel(winMode, nbStudentModif, dao.getStudent(nbStudentModif), dao);
 				Scene scene2 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
 
@@ -222,8 +221,7 @@ public class MainPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-				if (StudentDao.deleteStudentConfirmation(studentTable.getSelectionModel().getSelectedIndex())) {
-//					studentTable.getItems().remove(studentTable.getSelectionModel().getSelectedIndex());
+				if (dao.deleteStudentConfirmation(studentTable.getSelectionModel().getSelectedIndex())) {
 					observableStudents.remove(studentTable.getSelectionModel().getSelectedIndex());
 			}
 		}});
@@ -253,9 +251,9 @@ public class MainPanel extends BorderPane {
 			return false;
 	}
 
-	private void addStudentPanel() {
+	private void addStudentPanel(StudentDao dao) {
 		winMode = "add";
-		EditPanel root = new EditPanel(winMode, -1, null);
+		EditPanel root = new EditPanel(winMode, -1, null, dao);
 		Scene scene2 = new Scene(root);
 		Stage stage = (Stage) getScene().getWindow();
 
@@ -286,13 +284,6 @@ public class MainPanel extends BorderPane {
 		return observableStudents;
 	}
 
-	public StudentDao getDao() {
-		return dao;
-	}
-
-	public void setDao(StudentDao dao) {
-		this.dao = dao;
-	}
 
 
 }

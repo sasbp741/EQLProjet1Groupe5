@@ -60,7 +60,7 @@ public class EditPanel extends BorderPane {
 	private Button cancelButton = new Button("Annuler");
 
 
-	public EditPanel(String winMode, int studentIndex, Student student) {
+	public EditPanel(String winMode, int studentIndex, Student student, StudentDao dao) {
 		setPrefSize(350, 200);
 
 
@@ -164,10 +164,10 @@ public class EditPanel extends BorderPane {
 				//					lblRegexSurname.setVisible(true);
 				//				}
 
-				MainPanel root = new MainPanel();
+				MainPanel root = new MainPanel(dao);
 
 				root.getObservableStudents().add(studentGetTextField) ;
-				StudentDao.addStudent(studentGetTextField);
+				dao.addStudent(studentGetTextField);
 
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
@@ -181,7 +181,7 @@ public class EditPanel extends BorderPane {
 
 			@Override
 			public void handle(ActionEvent event) {
-				MainPanel root = new MainPanel();
+				MainPanel root = new MainPanel(dao);
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
 
