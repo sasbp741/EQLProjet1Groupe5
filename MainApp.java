@@ -40,12 +40,12 @@ public class MainApp extends Application {
 
 	public static void main(String[] args) {
 
-		//definemaxLength(maxLength);
-		//showmaxLength(maxLength);
+		definemaxLength(maxLength);
+		showmaxLength(maxLength);
 
-		//		if (!binFile.exists()) {
-		//writeDestinationFile();
-		//		}
+				if (!binFile.exists()) {
+		writeDestinationFile();
+				}
 		//System.out.println(SEQUENCE_LENGTH);
 		//System.out.println(entriesNumber);
 
