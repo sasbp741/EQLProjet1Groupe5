@@ -208,8 +208,9 @@ public class MainPanel extends BorderPane {
 		delButton.setDisable(true);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.setPrefHeight(50);
-
-		mainPan.getChildren().addAll(searchBox, advSearchPane, listPan, new Label ("Chargement de "+ dao.entriesNumber +" stagiaires. "));
+	//	Label totalEntries= new Label ("Chargement de "+ (dao.entriesNumber) +" stagiaires. ") ;
+		
+		mainPan.getChildren().addAll(searchBox, advSearchPane, listPan);
 		mainPan.setAlignment(Pos.TOP_RIGHT);
 		this.setTop(menuBox);
 		this.setCenter(mainPan);

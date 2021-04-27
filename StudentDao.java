@@ -19,10 +19,17 @@ import javafx.scene.control.ButtonType;
 import java.io.IOException;
 
 public class StudentDao {
-
+	
+	//Sabrina --------------------------------------------------------------
+		private static String originalPath = "c:/projet1/stagiaires.txt";
+		private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
+		private static String settingsPathFile = "c:/projet1/settings.bin";
+	
+//		private static String originalPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
+//		private static String destinationPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
+//		private static String settingsPathFile = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
+		
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
-	private static String originalPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
-	private static String destinationPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
 	private static int[] maxLength = new int[7];
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
@@ -30,10 +37,10 @@ public class StudentDao {
 	private static int SEQUENCE_LENGTH = 0;
 	static int entriesNumber = 0;
 	private static boolean[][] isWritten = new boolean[1314][3];
-	private static String settingsPathFile = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
 	public static File settingsFile = new File(settingsPathFile);
 	public static int settingsLength = 5;
 
+	
 
 	public List<Student> loadStudentFile() {
 		studentList.clear();

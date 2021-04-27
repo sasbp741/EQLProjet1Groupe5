@@ -168,7 +168,9 @@ public class EditPanel extends BorderPane {
 				MainPanel root = new MainPanel(dao);
 
 				root.getObservableStudents().add(studentGetTextField) ;
+				
 				dao.addStudent(studentGetTextField);
+				
 
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
