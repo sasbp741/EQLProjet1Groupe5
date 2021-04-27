@@ -33,6 +33,7 @@ public class EditPanel extends BorderPane {
 	private Label lblZipCode = new Label("Département :");
 	private Label lblPromo = new Label("Promotion :");
 	private Label lblYear = new Label("Année :");
+	
 
 
 	private ObservableList<String> observableZipCodes = FXCollections.observableArrayList(
@@ -43,7 +44,7 @@ public class EditPanel extends BorderPane {
 		"AE" , "AF" , "AG" , "AI" , "AL" , "AM" , "AN" , "AO" , "AQ" , "AR" , "AS" , "AT" , "AU" , "AW" , "AX" , "AZ" ,  "BA" , "BB" , "BD" , "BE" , "BF" , "BG" , "BH" , "BI" , "BJ" , "BM" , "BN" , "BO" , "BR" , "BS" , "BT" , "BV" , "BW" , "BY" , "BZ" , "CA" , "CC" , "CD" , "CF" , "CG" , "CH" , "CI" , "CK" , "CL" , "CM" , "CN" , "CO" , "CR" , "CS" , "CU" , "CV" , "CX" , "CY" , "CZ" , 	"DE" , "DJ" , "DK" , "DM" , "DO" , "DZ" ,  "EC" , "EE" , "EG" , "EH" , "ER" , "ES" , "ET" , "FI" , "FJ" , "FK" , "FM" , "FO" , "FR" , 	"GA" , "GB" , "GD" , "GE" , "GF" , "GH" , "GI" , "GL" , "GM" , "GN" , "GP" , "GQ" , "GR" , "GS" , "GT" , "GU" , "GW" , "GY" , "HK" , "HM" , "HN" , "HR" , "HT" , "HU" , "ID" , "IE" , "IL" , "IM" , "IN" , "IO" , "IQ" , "IR" , "IS" , "IT" , 	
 		"JM" , "JO" , "JP" , "KE" , "KG" , "KH" , "KI" , "KM" , "KN" , "KP" , "KR" , "KW" , "KY" , "KZ" , 	"LA" , "LB" , "LC" , "LI" , "LK" , "LR" , "LS" , "LT" , "LU" , "LV" , "LY" , "MA" , "MC" , "MD" , "MG" , "MH" , "MK" , "ML" , "MM" , "MN" , "MO" , "MP" , "MQ" , "MR" , "MS" , "MT" , "MU" , "MV" , "MW" , "MX" , "MY" , "MZ" , "NA" , "NC" , "NE" , "NF" , "NG" , "NI" , "NL" , "NO" , "NP" , "NR" , "NU" , "NZ" , 	"OM" , 	"PA" , "PE" , "PF" , "PG" , "PH" , "PK" , "PL" , "PM" , "PN" , "PR" , "PS" , "PT" , "PW" , "PY" , "QA" , 	"RE" , "RO" , "RU" , "RW" , "SA" , "SB" , "SC" , "SD" , "SE" , "SG" , "SH" , "SI" , "SJ" , "SK" , "SL" , "SM" , "SN" , "SO" , "SR" , "ST" , "SV" , "SY" , "SZ" , "TC" , "TD" , "TF" , "TG" , "TH" , "TJ" , "TK" , "TL" , "TM" , "TN" , "TO" , "TR" , "TT" , "TV" , "TW" , "TZ" , "UA" , "UG" , "UM" , "US" , "UY" , "UZ" , "VA" , "VC" , "VE" , "VG" , "VI" , "VN" , "VU" , "WF" , "WS" , "YE" , "YT" , "ZA" , "ZM" , "ZW" , "ZM" );
 
-	//utilité de l'observablePromos à voir pour cbox seulement dans editStudent ?
+	//Arraylist à remplir avec les données du RAF (promo)
 	private ObservableList<String> observablePromos = FXCollections.observableArrayList("0", "1", "2", "3", "4", "5","6", "7", "8", "9", "10");
 
 	private ObservableList<String> observableYears = FXCollections.observableArrayList(comboBoxYearRange());
@@ -53,7 +54,7 @@ public class EditPanel extends BorderPane {
 	private TextField fldFirstName = new TextField(prenom);
 	private TextField fldPromo = new TextField(promotion); // to addStudent
 	private ComboBox<String> cbZipCode = new ComboBox<String>(observableZipCodes);
-	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos); //not used at the moment, editStudent?
+	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos); //for advSearch
 	private ComboBox<String> cbYear = new ComboBox<String>(observableYears);
 
 	private Button saveButton = new Button("Ajouter le student");
@@ -61,8 +62,8 @@ public class EditPanel extends BorderPane {
 
 
 	public EditPanel(String winMode, int studentIndex, Student student, StudentDao dao) {
+		
 		setPrefSize(350, 200);
-
 
 		// setMaxWidth(300);
 		// setMaxHeight(200);
@@ -167,7 +168,9 @@ public class EditPanel extends BorderPane {
 				MainPanel root = new MainPanel(dao);
 
 				root.getObservableStudents().add(studentGetTextField) ;
+				
 				dao.addStudent(studentGetTextField);
+				
 
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
@@ -269,6 +272,30 @@ public class EditPanel extends BorderPane {
 
 	public void setCbYear(ComboBox<String> cbYear) {
 		this.cbYear = cbYear;
+	}
+
+	public Label getLblZipCode() {
+		return lblZipCode;
+	}
+
+	public void setLblZipCode(Label lblZipCode) {
+		this.lblZipCode = lblZipCode;
+	}
+
+	public Label getLblPromo() {
+		return lblPromo;
+	}
+
+	public void setLblPromo(Label lblPromo) {
+		this.lblPromo = lblPromo;
+	}
+
+	public Label getLblYear() {
+		return lblYear;
+	}
+
+	public void setLblYear(Label lblYear) {
+		this.lblYear = lblYear;
 	}
 
 }

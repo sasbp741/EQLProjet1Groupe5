@@ -14,6 +14,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -24,6 +26,7 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -107,6 +110,30 @@ public class MainPanel extends BorderPane {
 		searchBox.getChildren().addAll(searchField, searchButton, advSearchButton);
 		searchButton.getParent().requestFocus();
 
+
+		// Advanced Search Panel/Boxes
+		HBox advSearchBox = new HBox(10);
+		EditPanel editpanel = new EditPanel(winMode, -1, null, null);		
+		advSearchBox.getChildren().addAll(
+				editpanel.getLblZipCode(),editpanel.getCbZipCode(),
+				editpanel.getLblPromo(),editpanel.getCbPromo(),
+				editpanel.getLblYear(),editpanel.getCbYear());
+		TitledPane advSearchPane = new TitledPane() ;
+		advSearchPane.setText("Affiner la recherche : ");
+		advSearchPane.setExpanded(false);
+		advSearchPane.setContent(advSearchBox);
+
+		//Conditions for advanced search
+		String zipSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
+		String promoSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
+		String yearSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
+
+		
+
+
+
+
+
 		// ListPan
 
 
@@ -135,24 +162,33 @@ public class MainPanel extends BorderPane {
 		firstNameCol.setMinWidth(100);
 		firstNameCol.setPrefWidth(120);
 
+		//		lastNameCol.setMinWidth(100);
+		//		lastNameCol.setPrefWidth(160);
+		//		firstNameCol.setMinWidth(100);
+		//		firstNameCol.setPrefWidth(135);
+		//		classCol.setMinWidth(100);
+		//		classCol.setPrefWidth(110);
+		//		yearCol.setMinWidth(80);
+		//		yearCol.setPrefWidth(80);
+
 		studentTable.getColumns().addAll(lastNameCol, firstNameCol, zipCodeCol, classCol, yearCol);
 		studentTable.prefWidthProperty().bind(mainPan.widthProperty());
 		studentTable.prefHeightProperty().bind(mainPan.heightProperty());
 
 
 		//SearchingStudent filter
-//		FilteredList<Student> searchingStudent = new FilteredList<Student>(observableStudents);
-//		searchField.textProperty().addListener((observable, oldValue, newValue) -> {searchingStudent.setPredicate(student -> {
-//			return searchingStudentCondition(newValue, student); 
-//		});
-//		});
+		//		FilteredList<Student> searchingStudent = new FilteredList<Student>(observableStudents);
+		//		searchField.textProperty().addListener((observable, oldValue, newValue) -> {searchingStudent.setPredicate(student -> {
+		//			return searchingStudentCondition(newValue, student); 
+		//		});
+		//		});
 
 		//TableView Automatically Ascending Sorted by LastName then FirstName then YearCol(Descending)
-//		SortedList<Student> sortedData = new SortedList<>(searchingStudent);
-//		sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
-//		studentTable.setItems(sortedData);
-//		yearCol.setSortType(SortType.DESCENDING);
-//		studentTable.getSortOrder().addAll(lastNameCol,firstNameCol,yearCol) ;
+		//		SortedList<Student> sortedData = new SortedList<>(searchingStudent);
+		//		sortedData.comparatorProperty().bind(studentTable.comparatorProperty());
+		//		studentTable.setItems(sortedData);
+		//		yearCol.setSortType(SortType.DESCENDING);
+		//		studentTable.getSortOrder().addAll(lastNameCol,firstNameCol,yearCol) ;
 
 
 
@@ -177,8 +213,10 @@ public class MainPanel extends BorderPane {
 		delButton.setDisable(true);
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.setPrefHeight(50);
-
-		mainPan.getChildren().addAll(searchBox, listPan);
+	//	Label totalEntries= new Label ("Chargement de "+ (dao.entriesNumber) +" stagiaires. ") ;
+		
+		mainPan.getChildren().addAll(searchBox, advSearchPane, listPan);
+		mainPan.setAlignment(Pos.TOP_RIGHT);
 		this.setTop(menuBox);
 		this.setCenter(mainPan);
 		this.setBottom(buttonBox);
@@ -243,8 +281,8 @@ public class MainPanel extends BorderPane {
 			public void handle(ActionEvent event) {
 				if (dao.deleteStudentConfirmation(studentTable.getSelectionModel().getSelectedIndex())) {
 					observableStudents.remove(studentTable.getSelectionModel().getSelectedIndex());
-			}
-		}});
+				}
+			}});
 
 		studentTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Student>() {
 
