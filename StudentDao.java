@@ -12,17 +12,21 @@ import java.util.Optional;
 
 import javax.sound.midi.Sequence;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableView;
 
 import java.io.IOException;
 
 public class StudentDao {
 
+	private static final int TREE_ROOT = 657;
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
-	private static String originalPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
-	private static String destinationPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
+	private static String originalPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
+	private static String destinationPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
 	private static int[] maxLength = new int[7];
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
@@ -30,10 +34,9 @@ public class StudentDao {
 	private static int SEQUENCE_LENGTH = 0;
 	static int entriesNumber = 0;
 	private static boolean[][] isWritten = new boolean[1314][3];
-	private static String settingsPathFile = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
+	private static String settingsPathFile = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
 	public static File settingsFile = new File(settingsPathFile);
 	public static int settingsLength = 5;
-
 
 	public List<Student> loadStudentFile() {
 		studentList.clear();
@@ -72,9 +75,10 @@ public class StudentDao {
 		return studentList;
 	}
 
-	public String studentToString (Student student) {
+	public String studentToString(Student student) {
 
-		String[] str = new String[] {student.getLastName(),student.getFirstName(),student.getZipCode(),student.getPromo(),student.getYear()};
+		String[] str = new String[] { student.getLastName(), student.getFirstName(), student.getZipCode(),
+				student.getPromo(), student.getYear() };
 		StringBuffer sb = new StringBuffer();
 		for (int j = 0; j < 6; j++) {
 			if (j < 5) {
@@ -82,7 +86,7 @@ public class StudentDao {
 				for (int i = 0; i < maxLength[j] - str[j].length(); i++) {
 					sb.append(spaceChar);
 				}
-			}else {
+			} else {
 				for (int i = 0; i < 2 * CHILDREN_MAX_LENGTH; i++) {
 					sb.append(spaceChar);
 				}
@@ -91,20 +95,21 @@ public class StudentDao {
 		return sb.toString();
 	}
 
-	public void addStudent(Student student) { 
-		String chaine = studentToString(student) ;
-		RandomAccessFile raf = null;			
+	public void addStudent(Student student) {
+		String chaine = studentToString(student);
+		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(destinationPath, "rw");
 			raf.seek(SEQUENCE_LENGTH * entriesNumber);
 			byte[] b = chaine.getBytes();
 			raf.write(b);
-			addNewStudentToTree(entriesNumber) ; //to be confirmed, index of new student = entriesNumber+1 ? even when deleted? to be confirmed
+			addNewStudentToTree(entriesNumber); // to be confirmed, index of new student = entriesNumber+1 ? even when
+												// deleted? to be confirmed
 			entriesNumber++;
 			writeSettings(6, entriesNumber);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				if (raf != null) {
 					raf.close();
@@ -124,39 +129,39 @@ public class StudentDao {
 		return studentList.get(studentId);
 	}
 
-	public boolean deleteStudentConfirmation(int selectedIndex) { //TODO : suppression dans le fichier binaire
+	public boolean deleteStudentConfirmation(int selectedIndex) { // TODO : suppression dans le fichier binaire
 		Alert deleteStudentAlert = new Alert(AlertType.CONFIRMATION);
 		deleteStudentAlert.setTitle("Suppression d'un stagiaire");
 		deleteStudentAlert.setHeaderText("Vous allez supprimer le stagiaire suivant :\nNOM Prénom");
 		deleteStudentAlert.setContentText("Voulez-vous continuer ?");
 
 		Optional<ButtonType> option = deleteStudentAlert.showAndWait();
-		if (!option.isPresent() || option.get() == ButtonType.OK){
-			return true ;
+		if (!option.isPresent() || option.get() == ButtonType.OK) {
+			return true;
 		} else {
 			return false;
 		}
 	}
-	//----------------- AJOUT
+	// ----------------- AJOUT
 
 	public void addNewStudentToTree(int indexNewStudent) {
 		File dest = new File(destinationPath);
 		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(dest, "rw");
-			//			raf.seek(SEQUENCE_LENGTH * entriesNumber);
-			//			raf.write("PHOMMA               Yasamine            92AI 94     2015                        ".getBytes());
-			//			entriesNumber++;
-			//			int indexNewStudent = entriesNumber - 1;
+			// raf.seek(SEQUENCE_LENGTH * entriesNumber);
+			// raf.write("PHOMMA Yasamine 92AI 94 2015 ".getBytes());
+			// entriesNumber++;
+			// int indexNewStudent = entriesNumber - 1;
 			String newStudentName = getStudentString(indexNewStudent, raf).trim();
-			String medianName = getStudentString(657,raf).trim();
+			String medianName = getStudentString(657, raf).trim();
 			if (newStudentName.compareTo(medianName) >= 0) {
 				String SAD = getStudentSAD(657, raf);
 				if (SAD.length() > 0) {
 					int indexSAD = Integer.parseInt(SAD);
 					addNewStudentToTreeRecursive(indexSAD, newStudentName, raf, indexNewStudent);
 				} else {
-					//					System.out.println("pas de lancement");
+					// System.out.println("pas de lancement");
 				}
 			} else {
 				String SAG = getStudentSAG(657, raf);
@@ -164,7 +169,7 @@ public class StudentDao {
 					int indexSAG = Integer.parseInt(SAG);
 					addNewStudentToTreeRecursive(indexSAG, newStudentName, raf, indexNewStudent);
 				} else {
-					//					System.out.println("pas de lancement");
+					// System.out.println("pas de lancement");
 				}
 			}
 		} catch (IOException e) {
@@ -180,8 +185,8 @@ public class StudentDao {
 		}
 	}
 
-
-	public void addNewStudentToTreeRecursive(int index, String name, RandomAccessFile raf, int indexNewFile) throws IOException {
+	public void addNewStudentToTreeRecursive(int index, String name, RandomAccessFile raf, int indexNewFile)
+			throws IOException {
 		String addName = getStudentString(index, raf);
 		String SAD = getStudentSAD(index, raf);
 		String SAG = getStudentSAG(index, raf);
@@ -204,7 +209,7 @@ public class StudentDao {
 		}
 	}
 
-	// ------------------  ECRITURE DES SAG ET SAD
+	// ------------------ ECRITURE DES SAG ET SAD
 
 	public void writeChildren() {
 		File dest = new File(destinationPath);
@@ -228,10 +233,10 @@ public class StudentDao {
 
 	public void dichotomousWriteChildren(int debut, int fin, RandomAccessFile raf) throws IOException {
 		int median = (debut + fin) / 2;
-		//		if (fin - debut <= 2 ) {
-		//			// writeFeuille(median, raf);
-		//			return;
-		//		} else {
+		// if (fin - debut <= 2 ) {
+		// // writeFeuille(median, raf);
+		// return;
+		// } else {
 		int SAG = (debut + median) / 2;
 		int SAD = (median + fin) / 2;
 		if (SAG == entriesNumber / 2 || SAD == entriesNumber / 2) {
@@ -357,8 +362,10 @@ public class StudentDao {
 	public String getStudentSAD(int index, RandomAccessFile raf) throws IOException {
 		return getStudent(index, raf).substring(SEQUENCE_LENGTH - maxLength[5], SEQUENCE_LENGTH).trim();
 	}
+
 	public String getStudentSAG(int index, RandomAccessFile raf) throws IOException {
-		return getStudent(index, raf).substring(SEQUENCE_LENGTH - maxLength[5] - maxLength[6], SEQUENCE_LENGTH - maxLength[5]).trim();
+		return getStudent(index, raf)
+				.substring(SEQUENCE_LENGTH - maxLength[5] - maxLength[6], SEQUENCE_LENGTH - maxLength[5]).trim();
 	}
 
 	// ------------------------------------------------------ ECRITURE DU RAF
@@ -398,8 +405,8 @@ public class StudentDao {
 			}
 			for (int i = 0; i < maxLength.length; i++) {
 				SEQUENCE_LENGTH += maxLength[i];
-				if (i<5) {
-					writeSettings(i+1, maxLength[i]);
+				if (i < 5) {
+					writeSettings(i + 1, maxLength[i]);
 				}
 			}
 			System.out.println("Fichier correctement écrit");
@@ -464,7 +471,7 @@ public class StudentDao {
 			}
 		}
 	}
-	
+
 	public void initiateSettingsfile() {
 		RandomAccessFile raf = null;
 		try {
@@ -475,21 +482,21 @@ public class StudentDao {
 					raf.write(spaceChar.getBytes());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace(); 
+					e.printStackTrace();
 				}
 			}
 			try {
 				raf.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace(); 
+				e.printStackTrace();
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void writeSettings(int param, int value) {
 		RandomAccessFile raf = null;
 		try {
@@ -499,35 +506,133 @@ public class StudentDao {
 			System.out.println(" longeur : " + settingsLength);
 			raf.seek(param * settingsLength);
 			raf.write(String.valueOf(value).getBytes());
-			
+
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 	}
-	
+
 	public void loadSettings() {
 		RandomAccessFile raf = null;
-			try {
-				raf = new RandomAccessFile(settingsFile, "rw");
-				byte[] b = new byte[settingsLength];
-				raf.read(b);
-				String value = new String(b);
-				SEQUENCE_LENGTH = (int)Integer.parseInt(value.trim()); 
-				for (int i = 0; i < 5; i++) {
-							raf.read(b);
-							value = new String(b);
-							maxLength[i] = Integer.valueOf(value.trim());
-				}
+		try {
+			raf = new RandomAccessFile(settingsFile, "rw");
+			byte[] b = new byte[settingsLength];
+			raf.read(b);
+			String value = new String(b);
+			SEQUENCE_LENGTH = (int) Integer.parseInt(value.trim());
+			for (int i = 0; i < 5; i++) {
 				raf.read(b);
 				value = new String(b);
-				entriesNumber = Integer.valueOf(value.trim());
-				raf.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				maxLength[i] = Integer.valueOf(value.trim());
 			}
+			raf.read(b);
+			value = new String(b);
+			entriesNumber = Integer.valueOf(value.trim());
+			raf.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
+	public void simpleSearch(String term, ObservableList<Student> observableStudents) {
+		RandomAccessFile raf = null;
+		observableStudents.clear();
+		try {
+			raf = new RandomAccessFile(binFile, "r");
+			if (!term.trim().equals("")) {
+				simpleSearchRecursive(term.toUpperCase(), TREE_ROOT, raf, observableStudents);
+			} else {
+				observableStudents = FXCollections.observableArrayList(loadStudentFile());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void simpleSearchRecursive(String term, int index, RandomAccessFile raf,
+			ObservableList<Student> observableStudents) {
+		try {
+			raf.seek(SEQUENCE_LENGTH * index);
+			byte[] a = new byte[maxLength[0]];
+			raf.read(a);
+			byte[] b = new byte[maxLength[1]];
+			raf.read(b);
+			String lastName = new String(a).trim();
+			String firstName = new String(b).trim();
+			String name = lastName + " " + firstName;
+			if (name.toUpperCase().contains(term)) {
+				String[] studentInfo = new String[7];
+				for (int i = 2; i < 5; i++) {
+					byte[] c = new byte[maxLength[i]];
+					raf.read(c);
+					studentInfo[i] = new String(c).trim();
+				}
+				Student student = new Student(lastName, firstName, studentInfo[2], studentInfo[3], studentInfo[4]);
+				observableStudents.add(student);
+			}
+
+			for (int i = 2; i > 0; i--) {
+				raf.seek(SEQUENCE_LENGTH * (index + 1) - CHILDREN_MAX_LENGTH * i);
+				b = new byte[CHILDREN_MAX_LENGTH];
+				raf.read(b);
+				String childValue = new String(b).trim();
+				if (childValue.length() > 0) {
+					simpleSearchRecursive(term, Integer.valueOf(childValue), raf, observableStudents);
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+//	public void loadStudentTree(ObservableList<Student> observableStudents) {
+//		System.out.println("on load");
+//		RandomAccessFile raf = null;
+//		observableStudents.clear();
+//		try {
+//			raf = new RandomAccessFile(binFile, "r");
+//			loadStudentTreeRecursive(TREE_ROOT, raf, observableStudents);
+//
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	private void loadStudentTreeRecursive(int index, RandomAccessFile raf,
+//			ObservableList<Student> observableStudents) {
+//		try {
+//			for (int i = 2; i > 0; i--) {
+//				raf.seek(SEQUENCE_LENGTH * (index + 1) - (CHILDREN_MAX_LENGTH * i));
+//				byte[] a = new byte[CHILDREN_MAX_LENGTH];
+//				raf.read(a);
+//				String childValue = new String(a).trim();
+//				System.out.println("childvalue : " + childValue);
+//				if (childValue.length() > 0) {
+//					loadStudentTreeRecursive(Integer.valueOf(childValue), raf, observableStudents);
+//
+//				if (i > 1) {
+//					raf.seek(SEQUENCE_LENGTH * index);
+//					String[] studentInfo = new String[7];
+//					for (int j = 0; j < 5; i++) {
+//						
+//						byte[] c = new byte[maxLength[j]];
+//						raf.read(c);
+//						studentInfo[j] = new String(c).trim();
+//					}
+//					System.out.println("�tudiant : "+studentInfo[0] + " " + studentInfo[1]);
+//					Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],
+//							studentInfo[4]);
+//					observableStudents.add(student);
+//				}
+//				}
+//			}
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 }

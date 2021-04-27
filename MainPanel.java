@@ -26,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -34,7 +35,7 @@ import javafx.stage.Stage;
 
 public class MainPanel extends BorderPane {
 
-	private ObservableList<Student> observableStudents;
+	public ObservableList<Student> observableStudents;
 
 	public String winMode = "";
 	private Button addButton = new Button("Ajouter un stagiaire");
@@ -109,7 +110,7 @@ public class MainPanel extends BorderPane {
 		// ListPan
 
 
-		observableStudents = FXCollections.observableArrayList(dao.loadStudentFile());
+		observableStudents = FXCollections.observableArrayList();
 
 		TableView<Student> studentTable = new TableView<Student>(observableStudents);
 
@@ -161,6 +162,10 @@ public class MainPanel extends BorderPane {
 		AnchorPane.setBottomAnchor(studentTable, 5.);
 		AnchorPane.setRightAnchor(studentTable, 5.);
 		AnchorPane.setLeftAnchor(studentTable, 5.);
+//		ImageView addIcon = new ImageView("C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\icons\\add.png");
+//		addIcon.setFitWidth(20); 
+//		addIcon.setPreserveRatio(true);
+//        addButton.setGraphic(addIcon);
 		listPan.getChildren().addAll(studentTable, addButton, editButton, delButton);
 		// listPan.setPrefSize(600, 400);
 
@@ -178,7 +183,8 @@ public class MainPanel extends BorderPane {
 		this.setCenter(mainPan);
 		this.setBottom(buttonBox);
 
-
+//		dao.loadStudentTree(observableStudents);
+		
 		// EVENTS--------------------------------------------------------------------------------------
 
 		// Events menu
@@ -192,6 +198,20 @@ public class MainPanel extends BorderPane {
 
 		});
 
+		//Pour la recherche dans le textfield
+		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+		    dao.simpleSearch(searchField.getText(),observableStudents);
+		});
+		
+//		setOnAction(new EventHandler<ActionEvent>() {
+//			
+//			@Override
+//			public void handle(ActionEvent event) {
+//				dao.simpleSearch(searchField.getText());
+//				System.out.println("recherche : " + searchField.getText());
+//			}
+//		});
+		
 		addButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
