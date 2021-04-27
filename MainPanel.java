@@ -1,5 +1,7 @@
 package fr.eql.ai109.projet1;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -13,7 +15,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -28,6 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -44,8 +50,6 @@ public class MainPanel extends BorderPane {
 	private Button addButton = new Button("Ajouter un stagiaire");
 	private Button editButton = new Button("Modifier le stagiaire");
 	private Button delButton = new Button("Supprimer le stagiaire");
-	public static String iconDir = "C:/Users/Val/eclipse-workspace/AnnuaireEQL/src/fr/eql/ai109/projet1/icons/";
-
 
 	final Menu File = new Menu("Fichier");
 	final Menu Edition = new Menu("Edition");
@@ -138,9 +142,11 @@ public class MainPanel extends BorderPane {
 
 
 		observableStudents = FXCollections.observableArrayList();
-
+		dao.loadStudentTree(observableStudents) ;
+		
 		TableView<Student> studentTable = new TableView<Student>(observableStudents);
 
+		
 		TableColumn<Student, String> lastNameCol = new TableColumn<Student, String>("Nom");
 		lastNameCol.setCellValueFactory(new PropertyValueFactory<Student, String>("lastName"));
 
@@ -293,7 +299,46 @@ public class MainPanel extends BorderPane {
 			}
 		});
 
+		
+		
+		
+		
+		exportPDF.setOnAction(new EventHandler<ActionEvent>() {
 
+			@Override
+			public void handle(ActionEvent event) {
+			
+					try {
+						dao.exportToPdf(observableStudents) ;
+						
+//						Alert pdfExportedAlert = new Alert(AlertType.CONFIRMATION) ;
+//						Alert pdfExportedAlert = new Alert(AlertType.CONFIRMATION);
+//						  pdfExportedAlert.setTitle("Export PDF");
+//						  pdfExportedAlert.setHeaderText("Export de l'annuaire en PDF");
+//						  pdfExportedAlert.setContentText("L'annuaire a correctement été exporté.");
+//						  
+//						  ButtonType exportPDFViewFile = new ButtonType("Voir le fichier"); ButtonType
+//						  exportPDFViewDirectory = new ButtonType("Voir le dossier"); ButtonType
+//						  exportPDFConfirm = new ButtonType("OK"); //ButtonType buttonTypeCancel = new
+//						  ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+//						  
+//						  pdfExportedAlert.getButtonTypes().setAll(exportPDFViewFile,
+//						  exportPDFViewDirectory, exportPDFConfirm);
+//						  
+//						  Optional<ButtonType> result = pdfExportedAlert.showAndWait(); 
+//						  if  (result.get() == exportPDFViewFile) { 
+//							  Desktop.getDesktop().open(new
+//						  File(filename)); 
+//							  } else if (result.get() == exportPDFViewDirectory) { // ...
+//						  user chose "Two" } pdfExportedAlert.showAndWait();
+//						  System.out.println("Fichier exporté");
+							
+							
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			}
+		});
 	}
 
 	private boolean searchingStudentCondition(String newValue, Student student) {

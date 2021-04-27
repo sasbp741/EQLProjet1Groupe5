@@ -3,6 +3,9 @@ package fr.eql.ai109.projet1;
 public class Student {
 	
 	private String lastName,firstName,zipCode,promo,year;
+	private int index;
+	
+	
 	
 	public String getLastName() {
 		return lastName;
@@ -43,16 +46,35 @@ public class Student {
 	public void setYear(String year) {
 		this.year = year;
 	}
+	
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
+	
+	
+	
 
 	public Student() {
 	}
 
-	public Student(String lastName, String firstName, String zipCode, String promo, String year) {
+	public Student(String lastName, String firstName, String zipCode, String promo, String year, int index) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.zipCode = zipCode;
 		this.promo = promo;
 		this.year = year;
+		this.index =index;
+			}
+
+	@Override
+	public String toString() {
+		return "Student [lastName=" + lastName + ", firstName=" + firstName + ", zipCode=" + zipCode + ", promo="
+				+ promo + ", year=" + year + ", index=" + index + "]";
 	}
 
 	@Override
@@ -60,6 +82,7 @@ public class Student {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + index;
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((promo == null) ? 0 : promo.hashCode());
 		result = prime * result + ((year == null) ? 0 : year.hashCode());
@@ -80,6 +103,8 @@ public class Student {
 			if (other.firstName != null)
 				return false;
 		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (index != other.index)
 			return false;
 		if (lastName == null) {
 			if (other.lastName != null)
@@ -102,12 +127,6 @@ public class Student {
 		} else if (!zipCode.equals(other.zipCode))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Student [lastName=" + lastName + ", firstName=" + firstName + ", zipCode=" + zipCode + ", promo="
-				+ promo + ", year=" + year + "]";
 	}
 
 	

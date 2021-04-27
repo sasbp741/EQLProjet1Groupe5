@@ -83,23 +83,32 @@ public class LoadingPanel extends BorderPane {
 					public void run() {
 						try {
 							
-						//if (!dao.binFile.exists()) {
+						if (!dao.binFile.exists()) {
 							dao.initiateSettingsfile();
-			        		dao.definemaxLength();
-			        		progressBar.setProgress(0.25F);
-			        		dao.showmaxLength();
-			        		dao.writeDestinationFile();
-			        		progressBar.setProgress(0.50F);
-			        		dao.sortTargetFile();
-			        		progressBar.setProgress(0.75F);
-			        		dao.writeChildren();
-						progressBar.setProgress(1.0F);     
-			        	//	} else {
-		        		//	dao.loadSettings();
-		        			
-		        	//	}
 							
-							Thread.sleep(500);
+			        		dao.definemaxLength();
+			        		
+			        		progressBar.setProgress(0.25F);
+			        		
+			        		dao.showmaxLength();
+			        		
+			        		dao.writeDestinationFile();
+			        		
+			        		progressBar.setProgress(0.50F);
+			        		
+			        		dao.sortTargetFile();
+			        		
+			        		progressBar.setProgress(0.75F);
+			        		
+			        		dao.writeChildren();
+			        		
+						progressBar.setProgress(1.0F);     
+} else {
+	dao.loadSettings();
+		
+}
+							
+							Thread.sleep(0);
 							
 				        	
 							

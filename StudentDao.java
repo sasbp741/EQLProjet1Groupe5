@@ -6,11 +6,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.sound.midi.Sequence;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,21 +34,21 @@ public class StudentDao {
 
 
 	private static final int TREE_ROOT = 657;
-	
+
 	//Valentin----------------------------------------------------------------
-	private static String originalPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
-	private static String destinationPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
-	private static String settingsPathFile = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
-	
+	//	private static String originalPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
+	//	private static String destinationPath = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
+	//	private static String settingsPathFile = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
+
 	//Sabrina --------------------------------------------------------------
-//		private static String originalPath = "c:/projet1/stagiaires.txt";
-//		private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
-//		private static String settingsPathFile = "c:/projet1/settings.bin";
-	
-//		private static String originalPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
-//		private static String destinationPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
-//		private static String settingsPathFile = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
-//		private static String settingsPathFile = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
+	private static String originalPath = "c:/projet1/stagiaires.txt";
+	private static String destinationPath = "c:/projet1/stagiairesRaf.bin";
+	private static String settingsPathFile = "c:/projet1/settings.bin";
+
+	//		private static String originalPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiaires.txt";
+	//		private static String destinationPath = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\stagiairesRaf.bin";
+	//		private static String settingsPathFile = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
+	//		private static String settingsPathFile = "C:\\Users\\Val\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\settings.bin";
 
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
 
@@ -55,7 +64,9 @@ public class StudentDao {
 	public static int settingsLength = 5;
 
 	public List<Student> loadStudentFile() {
+		System.out.println("loaded");
 		studentList.clear();
+
 		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(destinationPath, "r");
@@ -75,7 +86,7 @@ public class StudentDao {
 				// System.out.println(studentInfo[0] + " " + studentInfo[1] + " " +
 				// studentInfo[2] + " " + studentInfo[3] + " " + studentInfo[4]);
 				Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],
-						studentInfo[4]);
+						studentInfo[4], i); // i=index
 				studentList.add(student);
 				// System.out.println(student.getLastname() + " : "+student.getFirstname() + " :
 				// "+student.getZipcode() + " : "+student.getPromo());
@@ -93,7 +104,7 @@ public class StudentDao {
 
 	public String studentToString(Student student) {
 
-		String[] str = new String[] { student.getLastName(), student.getFirstName(), student.getZipCode(),
+		String[] str = new String[] {student.getLastName(), student.getFirstName(), student.getZipCode(),
 				student.getPromo(), student.getYear() };
 		StringBuffer sb = new StringBuffer();
 		for (int j = 0; j < 6; j++) {
@@ -112,18 +123,17 @@ public class StudentDao {
 	}
 
 	public void addStudent(Student student) {
-		String chaine = studentToString(student);
+		String chaine = studentToString(student)+"1";
 		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(destinationPath, "rw");
 			raf.seek(SEQUENCE_LENGTH * entriesNumber);
 			byte[] b = chaine.getBytes();
 			raf.write(b);
-
-			addNewStudentToTree(entriesNumber); // to be confirmed, index of new student = entriesNumber+1 ? even when
-												// deleted? to be confirmed
+			addNewStudentToTree(entriesNumber); 
 			entriesNumber++;
 			writeSettings(6, entriesNumber);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -149,11 +159,12 @@ public class StudentDao {
 	public boolean deleteStudentConfirmation(int selectedIndex) { // TODO : suppression dans le fichier binaire
 		Alert deleteStudentAlert = new Alert(AlertType.CONFIRMATION);
 		deleteStudentAlert.setTitle("Suppression d'un stagiaire");
-		deleteStudentAlert.setHeaderText("Vous allez supprimer le stagiaire suivant :\nNOM Prénom");
+		deleteStudentAlert.setHeaderText("Vous �tes sur le point de supprimer un stagiaire.");
 		deleteStudentAlert.setContentText("Voulez-vous continuer ?");
 
 		Optional<ButtonType> option = deleteStudentAlert.showAndWait();
 		if (!option.isPresent() || option.get() == ButtonType.OK) {
+			deleteStudent(selectedIndex);
 			return true;
 		} else {
 			return false;
@@ -209,7 +220,7 @@ public class StudentDao {
 		String SAG = getStudentSAG(index, raf);
 		if (addName.compareTo(name) < 0) {
 			if (SAD.length() < 1) {
-				raf.seek((index + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH);
+				raf.seek((index + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH -1);
 				raf.write(Integer.toString(indexNewFile).getBytes());
 				return;
 			} else {
@@ -217,7 +228,7 @@ public class StudentDao {
 			}
 		} else {
 			if (SAG.length() < 1) {
-				raf.seek((index + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH * 2);
+				raf.seek((index + 1) * SEQUENCE_LENGTH - (CHILDREN_MAX_LENGTH * 2)-1 );
 				raf.write(Integer.toString(indexNewFile).getBytes());
 				return;
 			} else {
@@ -271,7 +282,7 @@ public class StudentDao {
 	public boolean writeSAG(int parent, RandomAccessFile raf, int SAG) {
 		if (isWritten[parent][0] == false && isWritten[SAG][2] == false) {
 			try {
-				raf.seek((parent + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH * 2);
+				raf.seek((parent + 1) * SEQUENCE_LENGTH - (CHILDREN_MAX_LENGTH * 2)- 1);
 				raf.write(Integer.toString(SAG).getBytes());
 				isWritten[parent][0] = true;
 				isWritten[SAG][2] = true;
@@ -286,7 +297,7 @@ public class StudentDao {
 	public boolean writeSAD(int parent, RandomAccessFile raf, int SAD) {
 		if (isWritten[parent][1] == false && isWritten[SAD][2] == false) {
 			try {
-				raf.seek((parent + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH);
+				raf.seek((parent + 1) * SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH -1);
 				raf.write(Integer.toString(SAD).getBytes());
 				isWritten[parent][1] = true;
 				isWritten[SAD][2] = true;
@@ -377,12 +388,28 @@ public class StudentDao {
 	}
 
 	public String getStudentSAD(int index, RandomAccessFile raf) throws IOException {
-		return getStudent(index, raf).substring(SEQUENCE_LENGTH - maxLength[5], SEQUENCE_LENGTH).trim();
+		return getStudent(index, raf).substring(SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH-1, SEQUENCE_LENGTH-1).trim();
 	}
 
 	public String getStudentSAG(int index, RandomAccessFile raf) throws IOException {
 		return getStudent(index, raf)
-				.substring(SEQUENCE_LENGTH - maxLength[5] - maxLength[6], SEQUENCE_LENGTH - maxLength[5]).trim();
+				.substring(SEQUENCE_LENGTH - (CHILDREN_MAX_LENGTH*2)-1, SEQUENCE_LENGTH - CHILDREN_MAX_LENGTH-1).trim();
+	}
+
+	public boolean isVisible(int index,RandomAccessFile raf) {
+
+		try {
+			raf.seek((index+1) * SEQUENCE_LENGTH-1);
+			byte[] b = new byte[1];
+			raf.read(b);
+			String studentVisible = new String(b);
+			if(studentVisible.equals("1")) {
+				return true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	// ------------------------------------------------------ ECRITURE DU RAF
@@ -414,19 +441,20 @@ public class StudentDao {
 					} else {
 						for (int i = 0; i < 2 * CHILDREN_MAX_LENGTH; i++) {
 							lineToWrite += spaceChar;
-						}
+						} 
 					}
 				}
 				byte[] b = lineToWrite.getBytes();
 				raf.write(b);
+				raf.write("1".getBytes());
 			}
 			for (int i = 0; i < maxLength.length; i++) {
 				SEQUENCE_LENGTH += maxLength[i];
 				if (i < 5) {
 					writeSettings(i + 1, maxLength[i]);
-				}
-			}
-			System.out.println("Fichier correctement écrit");
+				} 
+			} SEQUENCE_LENGTH += 1 ;
+			System.out.println("Fichier correctement �crit");
 			writeSettings(0, SEQUENCE_LENGTH);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -561,15 +589,16 @@ public class StudentDao {
 			if (!term.trim().equals("")) {
 				simpleSearchRecursive(term.toUpperCase(), TREE_ROOT, raf, observableStudents);
 			} else {
-				observableStudents = FXCollections.observableArrayList(loadStudentFile());
+				System.out.println("test");
+				loadStudentTree(observableStudents);
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void simpleSearchRecursive(String term, int index, RandomAccessFile raf,
-			ObservableList<Student> observableStudents) {
+	private void simpleSearchRecursive(String term, int index, RandomAccessFile raf,ObservableList<Student> observableStudents) {
 		try {
 			raf.seek(SEQUENCE_LENGTH * index);
 			byte[] a = new byte[maxLength[0]];
@@ -579,25 +608,26 @@ public class StudentDao {
 			String lastName = new String(a).trim();
 			String firstName = new String(b).trim();
 			String name = lastName + " " + firstName;
-			if (name.toUpperCase().contains(term)) {
+			if (name.toUpperCase().contains(term) && isVisible(index, raf)) {
 				String[] studentInfo = new String[7];
+				raf.seek(SEQUENCE_LENGTH*index + maxLength[0]+maxLength[1]);
 				for (int i = 2; i < 5; i++) {
 					byte[] c = new byte[maxLength[i]];
 					raf.read(c);
 					studentInfo[i] = new String(c).trim();
 				}
-				Student student = new Student(lastName, firstName, studentInfo[2], studentInfo[3], studentInfo[4]);
+				Student student = new Student(lastName, firstName, studentInfo[2], studentInfo[3], studentInfo[4], index);
 				observableStudents.add(student);
 			}
 
 			for (int i = 2; i > 0; i--) {
-				raf.seek(SEQUENCE_LENGTH * (index + 1) - CHILDREN_MAX_LENGTH * i);
+				raf.seek(SEQUENCE_LENGTH * (index + 1) - (CHILDREN_MAX_LENGTH * i)-1);
 				b = new byte[CHILDREN_MAX_LENGTH];
 				raf.read(b);
 				String childValue = new String(b).trim();
 				if (childValue.length() > 0) {
 					simpleSearchRecursive(term, Integer.valueOf(childValue), raf, observableStudents);
-				}
+				} 
 			}
 
 		} catch (IOException e) {
@@ -605,51 +635,302 @@ public class StudentDao {
 		}
 	}
 
-//	public void loadStudentTree(ObservableList<Student> observableStudents) {
-//		System.out.println("on load");
-//		RandomAccessFile raf = null;
-//		observableStudents.clear();
-//		try {
-//			raf = new RandomAccessFile(binFile, "r");
-//			loadStudentTreeRecursive(TREE_ROOT, raf, observableStudents);
-//
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	private void loadStudentTreeRecursive(int index, RandomAccessFile raf,
-//			ObservableList<Student> observableStudents) {
-//		try {
-//			for (int i = 2; i > 0; i--) {
-//				raf.seek(SEQUENCE_LENGTH * (index + 1) - (CHILDREN_MAX_LENGTH * i));
-//				byte[] a = new byte[CHILDREN_MAX_LENGTH];
-//				raf.read(a);
-//				String childValue = new String(a).trim();
-//				System.out.println("childvalue : " + childValue);
-//				if (childValue.length() > 0) {
-//					loadStudentTreeRecursive(Integer.valueOf(childValue), raf, observableStudents);
-//
-//				if (i > 1) {
-//					raf.seek(SEQUENCE_LENGTH * index);
-//					String[] studentInfo = new String[7];
-//					for (int j = 0; j < 5; i++) {
-//						
-//						byte[] c = new byte[maxLength[j]];
-//						raf.read(c);
-//						studentInfo[j] = new String(c).trim();
-//					}
-//					System.out.println("�tudiant : "+studentInfo[0] + " " + studentInfo[1]);
-//					Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],
-//							studentInfo[4]);
-//					observableStudents.add(student);
-//				}
-//				}
-//			}
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+
+
+	public void deleteStudent(int indexDeleteStudent) { 
+		File dest = new File(destinationPath);
+		RandomAccessFile raf = null;
+		try {
+			raf = new RandomAccessFile(dest, "rw");
+			raf.seek(SEQUENCE_LENGTH * (indexDeleteStudent+1)-1);
+			raf.write("0".getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (raf != null) {
+					raf.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------------
+	//	public void affichageAlphabetique(ObservableList<Student> observableStudents) {
+	//        File dest = new File(destinationPath);
+	//        RandomAccessFile raf = null;
+	//        try {
+	//            raf = new RandomAccessFile(dest, "rw");
+	//            String medianSAD = getStudentSAD(TREE_ROOT,raf).trim();
+	//            String medianSAG = getStudentSAG(TREE_ROOT,raf).trim();
+	//            AffichageAlphabetiqueRecursive(Integer.parseInt(medianSAG), raf, observableStudents);
+	//            // ajout du milieu dans observablesStudents
+	//            AffichageAlphabetiqueRecursive(Integer.parseInt(medianSAD), raf, observableStudents);
+	//        } catch (IOException e) {
+	//            e.printStackTrace();
+	//        } finally {
+	//            try {
+	//                if (raf != null) {
+	//                    raf.close();
+	//                }
+	//            } catch (IOException e) {
+	//                e.printStackTrace();
+	//            }
+	//        }
+	//    }
+	//	
+	//	public void AffichageAlphabetiqueRecursive(int index, RandomAccessFile raf, ObservableList<Student> observableStudents) {
+	//        try {
+	//            String SAD = getStudentSAD(index, raf);
+	//            String SAG = getStudentSAG(index, raf);
+	//            if (SAG.length() >= 1) {
+	//                AffichageAlphabetiqueRecursive(Integer.parseInt(SAG), raf, observableStudents);
+	//                addInTableview(index, raf, observableStudents);
+	//                if (SAD.length() >= 1) {
+	//                    AffichageAlphabetiqueRecursive(Integer.parseInt(SAD), raf, observableStudents);
+	//                }
+	//            } else if (SAG.length() < 1 && SAD.length() < 1){
+	//                addInTableview(index, raf, observableStudents);
+	//            }else if (SAG.length() < 1 && SAD.length() >= 1){
+	//                addInTableview(index, raf, observableStudents);
+	//                AffichageAlphabetiqueRecursive(Integer.parseInt(SAD), raf, observableStudents);
+	//            } else {
+	//                System.out.println("dont work");;
+	//            }
+	//        } catch (IOException e) {
+	//            e.printStackTrace();
+	//        }
+	//    }
+
+
+	public void addInTableview(int index, RandomAccessFile raf, ObservableList<Student> observableStudents) {
+		try {
+			raf.seek(index * SEQUENCE_LENGTH - 1);
+			String[] studentInfo = new String[7];
+			for (int j = 0; j < 5; j++) {
+				byte[] c = new byte[maxLength[j]];
+				raf.read(c);
+				studentInfo[j] = new String(c).trim();
+			}
+			Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],studentInfo[4],index);
+			observableStudents.add(student);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//	List<Student> studentList2 = new ArrayList<>(); 
+	//    StudentDao dao = new StudentDao();
+	//   // studentList2 = FXCollections.observableArrayList();
+	//    dao.affichageAlphabetique(studentList2);
+	//    for (int i = 0; i < 50 ; i++) {
+	//        System.out.println(studentList2.get(i).getFirstName() + "  " + studentList2.get(i).getLastName() );
+	//    }
+
+
+
+
+
+
+
+
+
+	public void loadStudentTree(ObservableList<Student> observableStudents) {
+		System.out.println("on load");
+		RandomAccessFile raf = null;
+		observableStudents.clear();
+		try {
+			raf = new RandomAccessFile(binFile, "r");
+			loadStudentTreeRecursive(TREE_ROOT, raf, observableStudents);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadStudentTreeRecursive(int index, RandomAccessFile raf,	ObservableList<Student> observableStudents) {
+		try {
+
+			String SAD = getStudentSAD(index, raf);
+			String SAG = getStudentSAG(index, raf);
+
+			if (SAG.length()>0) {
+				loadStudentTreeRecursive(Integer.parseInt(SAG),raf,observableStudents);
+			}
+			raf.seek(SEQUENCE_LENGTH * index);
+			String[] studentInfo = new String[7];
+			for (int j = 0; j < 5; j++) {
+				byte[] c = new byte[maxLength[j]];
+				raf.read(c);
+				studentInfo[j] = new String(c).trim();
+			}
+			System.out.println("�tudiant : "+studentInfo[0] + " " + studentInfo[1]);
+			Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],studentInfo[4],index);
+			
+			if (isVisible(index, raf)) {
+				observableStudents.add(student);
+			}
+
+			if (SAD.length()>0) {
+
+				loadStudentTreeRecursive(Integer.parseInt(SAD),raf,observableStudents);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
+
+
+	public static void exportToPdf(ObservableList<Student> observableStudents) throws IOException {
+		String filename = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\annuaireEQL.pdf";
+		String title = "Annuaire EQL";
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM:yyyy HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		String[] today = String.valueOf(dtf.format(now)).split(" ");
+
+		//On initialise un nouveau document dans PDFBox
+		PDDocument annuairePdf = new PDDocument();
+
+		//On définit les polices que l'on va utiliser dans le document, ainsi que leur taille
+		PDFont titleFont = PDType1Font.HELVETICA_BOLD;
+		PDFont subtitleFont = PDType1Font.HELVETICA;
+		PDFont marginFont = PDType1Font.HELVETICA;
+		PDFont h1Font = PDType1Font.HELVETICA_BOLD;
+		PDFont bodyFont = PDType1Font.HELVETICA;
+
+		int titleFontSize = 40;
+		int subtitleFontSize = 12;
+		int marginFontSize = 12;
+		int h1FontSize = 18;
+		int bodyFontSize = 14;
+
+		try {
+
+			//PREMIERE PAGE
+			//La première page n'est pas dynamique, on y ajoute juste un titre,
+			//le logo de l'école, la date et l'heure de l'export et peut-être
+			//le nombre total d'entrées.
+
+			//On crée une page
+			PDPage firstPage = new PDPage();
+			//On ajoute la page à notre doc
+			annuairePdf.addPage(firstPage);
+
+			//On ouvre un stream pour injecter les données dans la première page
+			PDPageContentStream contents = new PDPageContentStream(annuairePdf, firstPage);
+
+			//Même si le logo apparait en dessous du titre, on le dessine en premier
+			//afin que le titre soit au premier plan (un peu comme les calques sur Photoshop)
+			PDImageXObject schoolLogo = PDImageXObject.createFromFile(
+					"C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\icons\\logoeql.png",
+					annuairePdf);
+			//			schoolLogo.set
+			//On dessine l'iimage avec ses coordonnées puis ses dimensions
+			contents.drawImage(schoolLogo, 180, 350, 250, 101);
+
+			//On commence à écrire du texte sur la page
+			contents.beginText();
+			contents.setFont(titleFont, titleFontSize);
+			contents.setLeading(14.5f);
+
+			//newLineAtOffset permet de définir une nouvelle ligne en définissant
+			//où sur la page on souhaite qu'elle commence (traite la page comme un
+			//plan géométrique, donc les coordonnées (0,0) correspondent au coin
+			//bas-gauche de la page.
+			//Une fois que l'on a déclaré cette méthode, elle devient relative :
+			//les positions suivantes visent des coordonnées par rapport au premier point.
+
+			//Ici on vise un point à peu près au centre-haut de la page pour y placer le titre
+			contents.newLineAtOffset(170, 470);
+			//On y affiche le titre
+			contents.showText(title);
+			contents.setFont(subtitleFont, subtitleFontSize);
+
+			//Vu que newLineAtOffset est relative, 40 déplace le curseur de 40 à droite
+			//par rapport à la dernière fois où on l'a utilisée, et -170 descend dans la page.
+			contents.newLineAtOffset(40, -145);
+			contents.showText("Export� le " + today[0] + " � " + today[1]);
+			contents.newLineAtOffset(55, -15);
+			contents.showText(entriesNumber+" entr�es");
+			contents.endText();
+			contents.close();
+
+			//On initialise le n° de la deuxième page, pour pouvoir aller écrire ce numéro
+			//en bas de page
+
+			int nbPages = 2;
+
+			//Ici on crée une boucle qui va permettre d'écrire le nombre total de stagiaires
+			// (j'ai mis ce nombre à 250 pour tester)
+			// En fonction de la mise en page choisie, on peut ici afficher 7 stagiaires par page
+			// (la deuxième boucle s'occupe d'écrire les étudiants sur la page, à chaque fois que
+			//les 7 sont écrits ont refait un tour de la première boucle en créant une nouvelle page.
+
+			for (int i = 0; i <  observableStudents.size(); i++) {
+				PDPage contentPage = new PDPage();
+				annuairePdf.addPage(contentPage);
+				contents = new PDPageContentStream(annuairePdf, contentPage);
+
+				contents.beginText();
+				contents.setLeading(17f);
+				contents.setFont(marginFont, marginFontSize);
+				//On va écrire le header (le footer est après la boucle)
+				contents.newLineAtOffset(50, 740);
+				contents.showText("Annuaire EQL");
+				contents.newLineAtOffset(400, 0);
+				contents.showText(today[0] + " " + today[1]);
+				contents.newLineAtOffset(-400, -50);
+
+				//On écrit nos 7 stagiaires
+				for (int j = 1; j < 8; j++) {
+					if (i >= observableStudents.size())
+						break;
+					//h1 est le nom que j'ai choisi pour le style du nom/prénom
+					contents.setFont(h1Font, h1FontSize);
+					contents.showText(observableStudents.get(i).getLastName() + " " +  observableStudents.get(i).getFirstName());
+					contents.newLine();
+					//body est le nom pour le corps de texte sous le nom du stagiaire
+					contents.setFont(bodyFont, bodyFontSize);
+					contents.showText("D�partement : " + observableStudents.get(i).getZipCode());
+					contents.newLine();
+					contents.showText("Promotion : " + observableStudents.get(i).getPromo());
+					contents.newLine();
+					contents.showText("Ann�e : " + observableStudents.get(i).getYear());
+					//On descend de 35 pour aller écrire le suivant
+					contents.newLineAtOffset(0, -35);
+					i++;
+				}
+				//On écrit ensuite le footer
+				contents.newLineAtOffset(250, -40);
+				contents.setFont(marginFont, marginFontSize);
+				contents.showText(String.valueOf(nbPages));
+				nbPages++;
+				contents.endText();
+				contents.close();
+				annuairePdf.save(filename);
+			}
+		} finally {
+			//On ferme le fichier pour le libérer de la mémoire
+			annuairePdf.close();
+
+			// Tout ça c'est le code de fenêtre Alert disant "l'annuaire
+			// a correctement été exporté", avec 3 boutons d'options :
+			// - Ouvrir le fichier
+			// - Ouvrir le dossier
+			// - Ok (rien faire du coup)
+			// A voir où on le met au moment de l'intégration :)
+
+
+
+
+		}
+	}
 
 }

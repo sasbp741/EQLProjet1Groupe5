@@ -28,8 +28,8 @@ public class EditPanel extends BorderPane {
 	//	private Label lblRegexName = new Label("Votre nom est incorrecte");
 	//	private Label lblRegexSurname = new Label("Votre prenom est incorrecte");
 
-	private Label lblLastName = new Label("Nom du student :");
-	private Label lblFirstName = new Label("Prénom du student :");
+	private Label lblLastName = new Label("Nom du stagiaire : ");
+	private Label lblFirstName = new Label("Prénom du stagiaire : ");
 	private Label lblZipCode = new Label("Département :");
 	private Label lblPromo = new Label("Promotion :");
 	private Label lblYear = new Label("Année :");
@@ -57,7 +57,7 @@ public class EditPanel extends BorderPane {
 	private ComboBox<String> cbPromo = new ComboBox<String>(observablePromos); //for advSearch
 	private ComboBox<String> cbYear = new ComboBox<String>(observableYears);
 
-	private Button saveButton = new Button("Ajouter le student");
+	private Button saveButton = new Button("Ajouter le stagiaire");
 	private Button cancelButton = new Button("Annuler");
 
 
@@ -74,7 +74,7 @@ public class EditPanel extends BorderPane {
 		HBox header = new HBox(30);
 		header.setAlignment(Pos.CENTER);
 
-		Label headerTitle = new Label("Ajouter un student");
+		Label headerTitle = new Label("Ajouter un stagiaire");
 		headerTitle.setMinHeight(50);
 		headerTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 		header.getChildren().add(headerTitle);
@@ -85,11 +85,11 @@ public class EditPanel extends BorderPane {
 		int hSpace = 20;
 
 
-		HBox hbNom = new HBox(hSpace);
-		hbNom.getChildren().addAll(lblNom, fldLastName);//lblRegexName
-
-		HBox hbPrenom = new HBox(hSpace);
-		hbPrenom.getChildren().addAll(lblPrenom, fldFirstName);//lblRegexSurname
+//		HBox hbNom = new HBox(hSpace);
+//		hbNom.getChildren().addAll(lblNom, fldLastName);//lblRegexName
+//
+//		HBox hbPrenom = new HBox(hSpace);
+//		hbPrenom.getChildren().addAll(lblPrenom, fldFirstName);//lblRegexSurname
 
 		HBox hbLastName = new HBox(hSpace);
 		hbLastName.getChildren().addAll(lblLastName, fldLastName);
@@ -145,7 +145,8 @@ public class EditPanel extends BorderPane {
 				String zipCode = cbZipCode.getSelectionModel().getSelectedItem() ;
 				String promo = fldPromo.getText().toUpperCase() ;
 				String year = cbYear.getSelectionModel().getSelectedItem();
-				Student studentGetTextField = new Student (lastName, firstName, zipCode, promo, year) ;
+				Student studentGetTextField = new Student (lastName, firstName, zipCode, promo, year,dao.entriesNumber) ;
+				
 
 				//				if (winMode == "add") {
 				//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
@@ -166,10 +167,9 @@ public class EditPanel extends BorderPane {
 				//				}
 
 				MainPanel root = new MainPanel(dao);
-
 				root.getObservableStudents().add(studentGetTextField) ;
-				
 				dao.addStudent(studentGetTextField);
+				dao.loadStudentTree(root.observableStudents);
 				
 
 				Scene scene1 = new Scene(root);
@@ -212,7 +212,7 @@ public class EditPanel extends BorderPane {
 
 	public String[] comboBoxYearRange() {    
 		Year startDate = Year.now().minusYears(20);  //magic number memo pour refacto //si valeur de départ fixe : Year.of(2002)
-		Year endDate   = Year.now().plusYears(10);   //magic number memo pour refacto
+		Year endDate   = Year.now().plusYears(0);   //magic number memo pour refacto
 		Year dateCalculate = startDate ;
 		String yearList[] = new String[30]; //magic number memo pour refacto 20+10 =30
 		while(dateCalculate.isBefore(endDate)){
