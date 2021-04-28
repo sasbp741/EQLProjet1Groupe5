@@ -34,6 +34,8 @@ public class EditPanel extends BorderPane {
 	private Label lblPromo = new Label("Promotion :");
 	private Label lblYear = new Label("Année :");
 	
+	
+	
 
 
 	private ObservableList<String> observableZipCodes = FXCollections.observableArrayList(
@@ -60,8 +62,10 @@ public class EditPanel extends BorderPane {
 	private Button saveButton = new Button("Ajouter le stagiaire");
 	private Button cancelButton = new Button("Annuler");
 
+	
 
-	public EditPanel(String winMode, int studentIndex, Student student, StudentDao dao) {
+	public EditPanel(String winMode, Student student, StudentDao dao) {
+		
 		
 		setPrefSize(350, 200);
 
@@ -126,20 +130,26 @@ public class EditPanel extends BorderPane {
 		setBottom(hbBoutons);
 
 		if (winMode == "edit") {
-			headerTitle.setText("Modifier un student");
+			headerTitle.setText("Modifier un stagiaire");
 			saveButton.setText("Confirmer la modification");
 			fldLastName.setText(student.getLastName());
 			fldFirstName.setText(student.getFirstName());
 			cbZipCode.getSelectionModel().select(student.getZipCode());
-			cbPromo.getSelectionModel().select(student.getPromo());
+			fldPromo.setText(student.getPromo());
 			cbYear.getSelectionModel().select(student.getYear());
 		}
 
+	
+		
 		saveButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 
+				if (winMode == "edit") {
+					dao.deleteStudent(student.getIndex());
+				} 
+				
 				String lastName =  fldLastName.getText().toUpperCase();
 				String firstName = capitalizeWords(fldFirstName.getText()) ;
 				String zipCode = cbZipCode.getSelectionModel().getSelectedItem() ;
@@ -147,6 +157,11 @@ public class EditPanel extends BorderPane {
 				String year = cbYear.getSelectionModel().getSelectedItem();
 				Student studentGetTextField = new Student (lastName, firstName, zipCode, promo, year,dao.entriesNumber) ;
 				
+				MainPanel root = new MainPanel(dao);
+				dao.addStudent(studentGetTextField);
+				dao.loadStudentTree(root.observableStudents);
+				//Increase entriesnumber label :
+				//updateLblTotalEntriesNumber(dao.entriesNumberVisible++) ;
 
 				//				if (winMode == "add") {
 				//					Stagiaire student = new Stagiaire(fldLastName.getText(), fldFirstName.getText(),
@@ -166,17 +181,13 @@ public class EditPanel extends BorderPane {
 				//					lblRegexSurname.setVisible(true);
 				//				}
 
-				MainPanel root = new MainPanel(dao);
-				root.getObservableStudents().add(studentGetTextField) ;
-				dao.addStudent(studentGetTextField);
-				dao.loadStudentTree(root.observableStudents);
-				
-
+			//	root.getObservableStudents().add(studentGetTextField) ;
+								
 				Scene scene1 = new Scene(root);
 				Stage stage = (Stage) getScene().getWindow();
 
 				stage.setScene(scene1);
-
+				
 			}
 		});
 
@@ -190,11 +201,10 @@ public class EditPanel extends BorderPane {
 
 				stage.setScene(scene1);
 			}
-		});
-
-
-
+		}) ;
 	}
+
+
 
 	public static String capitalizeWords(String string) { 
 		char[] chars = string.toLowerCase().toCharArray(); 
@@ -297,5 +307,13 @@ public class EditPanel extends BorderPane {
 	public void setLblYear(Label lblYear) {
 		this.lblYear = lblYear;
 	}
+
+//	public Label getLblTotalEntries() {
+//		return lblTotalEntries;
+//	}
+//
+//	public void setLblTotalEntries(Label lblTotalEntries) {
+//		this.lblTotalEntries = lblTotalEntries;
+//	}
 
 }

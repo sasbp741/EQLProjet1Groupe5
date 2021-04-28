@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.sound.midi.Sequence;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -21,14 +19,11 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableView;
-
-import java.io.IOException;
+import javafx.scene.control.ProgressBar;
 
 public class StudentDao {
 
@@ -56,6 +51,8 @@ public class StudentDao {
 	private static String spaceChar = " ";
 	private static int CHILDREN_MAX_LENGTH = 12;
 	public File binFile = new File(destinationPath);
+
+	private static int visibleEntriesNumber =0;
 	private static int SEQUENCE_LENGTH = 0;
 	static int entriesNumber = 0;
 	private static boolean[][] isWritten = new boolean[1314][3];
@@ -127,7 +124,7 @@ public class StudentDao {
 		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(destinationPath, "rw");
-			raf.seek(SEQUENCE_LENGTH * entriesNumber);
+			raf.seek(SEQUENCE_LENGTH * (entriesNumber));
 			byte[] b = chaine.getBytes();
 			raf.write(b);
 			addNewStudentToTree(entriesNumber); 
@@ -148,15 +145,15 @@ public class StudentDao {
 	}
 
 	public void editStudent(int studentId, Student student) {
-		// TODO Auto-generated method stub
-
+		deleteStudent(studentId);
+		addStudent(student);
 	}
 
 	public Student getStudent(int studentId) {
 		return studentList.get(studentId);
 	}
 
-	public boolean deleteStudentConfirmation(int selectedIndex) { // TODO : suppression dans le fichier binaire
+	public boolean deleteStudentConfirmation(Student student) { 
 		Alert deleteStudentAlert = new Alert(AlertType.CONFIRMATION);
 		deleteStudentAlert.setTitle("Suppression d'un stagiaire");
 		deleteStudentAlert.setHeaderText("Vous êtes sur le point de supprimer un stagiaire.");
@@ -164,7 +161,6 @@ public class StudentDao {
 
 		Optional<ButtonType> option = deleteStudentAlert.showAndWait();
 		if (!option.isPresent() || option.get() == ButtonType.OK) {
-			deleteStudent(selectedIndex);
 			return true;
 		} else {
 			return false;
@@ -189,7 +185,6 @@ public class StudentDao {
 					int indexSAD = Integer.parseInt(SAD);
 					addNewStudentToTreeRecursive(indexSAD, newStudentName, raf, indexNewStudent);
 				} else {
-					// System.out.println("pas de lancement");
 				}
 			} else {
 				String SAG = getStudentSAG(657, raf);
@@ -197,7 +192,6 @@ public class StudentDao {
 					int indexSAG = Integer.parseInt(SAG);
 					addNewStudentToTreeRecursive(indexSAG, newStudentName, raf, indexNewStudent);
 				} else {
-					// System.out.println("pas de lancement");
 				}
 			}
 		} catch (IOException e) {
@@ -311,7 +305,7 @@ public class StudentDao {
 
 	// ----------------------------------------------------------- TRIER LE TABLEAU
 
-	public void sortTargetFile() {
+	public void sortTargetFile(ProgressBar progressBar) {
 		File dest = new File(destinationPath);
 		RandomAccessFile raf = null;
 		try {
@@ -324,6 +318,8 @@ public class StudentDao {
 					if (nom1.compareTo(nom2) > 0) {
 						swapLines(j, j + 1, raf);
 					}
+					float progress = (float)(entriesNumber-i)/entriesNumber;
+	                progressBar.setProgress(.5+(progress*.25F));
 				}
 			}
 		} catch (IOException e) {
@@ -454,7 +450,7 @@ public class StudentDao {
 					writeSettings(i + 1, maxLength[i]);
 				} 
 			} SEQUENCE_LENGTH += 1 ;
-			System.out.println("Fichier correctement écrit");
+			
 			writeSettings(0, SEQUENCE_LENGTH);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -546,9 +542,6 @@ public class StudentDao {
 		RandomAccessFile raf = null;
 		try {
 			raf = new RandomAccessFile(settingsFile, "rw");
-			System.out.println("param : " + param);
-			System.out.println("value : " + value);
-			System.out.println(" longeur : " + settingsLength);
 			raf.seek(param * settingsLength);
 			raf.write(String.valueOf(value).getBytes());
 
@@ -738,19 +731,19 @@ public class StudentDao {
 
 
 	public void loadStudentTree(ObservableList<Student> observableStudents) {
-		System.out.println("on load");
 		RandomAccessFile raf = null;
 		observableStudents.clear();
 		try {
 			raf = new RandomAccessFile(binFile, "r");
 			loadStudentTreeRecursive(TREE_ROOT, raf, observableStudents);
-
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void loadStudentTreeRecursive(int index, RandomAccessFile raf,	ObservableList<Student> observableStudents) {
+		
 		try {
 
 			String SAD = getStudentSAD(index, raf);
@@ -766,11 +759,12 @@ public class StudentDao {
 				raf.read(c);
 				studentInfo[j] = new String(c).trim();
 			}
-			System.out.println("étudiant : "+studentInfo[0] + " " + studentInfo[1]);
 			Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],studentInfo[4],index);
 			
 			if (isVisible(index, raf)) {
 				observableStudents.add(student);
+				
+				//visibleEntriesNumber++ ;
 			}
 
 			if (SAD.length()>0) {
@@ -788,13 +782,15 @@ public class StudentDao {
 
 
 
-	public static void exportToPdf(ObservableList<Student> observableStudents) throws IOException {
-		String filename = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\annuaireEQL.pdf";
+	public static String exportToPdf(ObservableList<Student> observableStudents) throws IOException {
 		String title = "Annuaire EQL";
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM:yyyy HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		String[] today = String.valueOf(dtf.format(now)).split(" ");
-
+		DateTimeFormatter dtfFile = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+        String todayFile = dtfFile.format(now);
+        String filename = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\annuaireEQL_"+todayFile+".pdf";
+		
 		//On initialise un nouveau document dans PDFBox
 		PDDocument annuairePdf = new PDDocument();
 
@@ -931,6 +927,7 @@ public class StudentDao {
 
 
 		}
+		return filename;
 	}
 
 }
