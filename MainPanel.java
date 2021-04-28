@@ -59,14 +59,17 @@ public class MainPanel extends BorderPane {
 	ToggleGroup userMode;
 	TableView<Student> studentTable ;
 
-
+	private String searchMode = "simple" ;
 	private Label lblTotalEntries ;
+	EditPanel editpanel ;
+	TextField searchField ;
+	
 
 	@SuppressWarnings("unchecked")
 
 	public MainPanel(StudentDao dao) {
 
-		lblTotalEntries = new Label ("Affichage de "+ (dao.entriesNumber) +" stagiaires     ");
+	//	lblTotalEntries = new Label ("Affichage de "+ (dao.entriesNumber) +" stagiaires     ");
 		setPrefSize(600, 600);
 
 		// Menu
@@ -102,7 +105,7 @@ public class MainPanel extends BorderPane {
 		// SearchBox
 		HBox searchBox = new HBox(10);
 
-		TextField searchField = new TextField();
+		searchField = new TextField();
 		searchField.setPrefWidth(410);
 		searchField.prefWidthProperty().bind(searchBox.widthProperty());
 		searchField.setPromptText("Rechercher un stagiaire...");
@@ -127,7 +130,7 @@ public class MainPanel extends BorderPane {
 
 		// Advanced Search Panel/Boxes
 		HBox advSearchBox = new HBox(10);
-		EditPanel editpanel = new EditPanel(winMode, null, null);		
+		editpanel = new EditPanel(winMode, null, null);		
 		advSearchBox.getChildren().addAll(
 				editpanel.getLblZipCode(),editpanel.getCbZipCode(),
 				editpanel.getLblPromo(),editpanel.getCbPromo(),
@@ -137,23 +140,39 @@ public class MainPanel extends BorderPane {
 		advSearchPane.setExpanded(false);
 		advSearchPane.setContent(advSearchBox);
 
-		//Conditions for advanced search
-		String zipSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
-		String promoSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
-		String yearSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
+		editpanel.cbYear.getSelectionModel().select("--");
+		editpanel.cbZipCode.getSelectionModel().select("--");
+		editpanel.cbPromo.getSelectionModel().select("--");
+		
 
+		
+		advSearchPane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
-
-
-
-
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				
+				
+				if (advSearchPane.isExpanded()) {
+					searchMode = "advance" ;
+					launchAdvSearch(dao);
+				} else {
+					searchMode = "simple" ;
+					if (searchField.getText().length()>0) {
+						dao.simpleSearch(searchField.getText(), observableStudents);
+					} else {
+						dao.loadStudentTree(observableStudents);
+						
+					}
+				}
+			}
+		});
 
 		// ListPan
 
 
 		observableStudents = FXCollections.observableArrayList();
-		dao.loadStudentTree(observableStudents) ;
-
+		updateTVMode(dao);
+		
 		studentTable = new TableView<Student>(observableStudents);
 
 
@@ -236,13 +255,15 @@ public class MainPanel extends BorderPane {
 			userMode.selectToggle(admin);
 		}
 
-		mainPan.getChildren().addAll(searchBox, advSearchPane, listPan, lblTotalEntries);
+		mainPan.getChildren().addAll(searchBox, advSearchPane, listPan);
 		mainPan.setAlignment(Pos.TOP_RIGHT);
 		this.setTop(menuBox);
 		this.setCenter(mainPan);
 		this.setBottom(buttonBox);
 
-
+	
+		
+		
 
 		// EVENTS--------------------------------------------------------------------------------------
 
@@ -275,12 +296,48 @@ public class MainPanel extends BorderPane {
 
 		});
 
+		
+		//Conditions for advanced search
+	
+		
 		//Pour la recherche dans le textfield
 		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+			
+			if (searchMode.equals("simple")) {
 			dao.simpleSearch(searchField.getText(),observableStudents);
+			} else {
+				launchAdvSearch(dao);
+			}
+			
+			
 			if(studentTable.getSelectionModel().getSelectedItem() == null) {
 				disableButtons();
 			} 
+			
+		});
+		
+		editpanel.cbZipCode.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				launchAdvSearch(dao);
+			}
+		});
+		
+		editpanel.cbYear.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				launchAdvSearch(dao);
+			}
+		});
+		
+		editpanel.cbPromo.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				launchAdvSearch(dao);
+			}
 		});
 
 		//		setOnAction(new EventHandler<ActionEvent>() {
@@ -337,12 +394,15 @@ public class MainPanel extends BorderPane {
 			public void handle(ActionEvent event) {
 				if (dao.deleteStudentConfirmation(studentTable.getSelectionModel().getSelectedItem())) {					
 					dao.deleteStudent(studentTable.getSelectionModel().getSelectedItem().getIndex());
-					dao.loadStudentTree(observableStudents);
+					
+					updateTVMode(dao);
 					//Decrease entriesnumber label :
 					//	dao.entriesNumber-- ;   
 					//editpanel.updateLblTotalEntriesNumber(dao.entriesNumber) ;  //attention : modifier dans settings aussi!
 				}
-			}});
+			}
+
+});
 
 		delete.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -350,7 +410,7 @@ public class MainPanel extends BorderPane {
 			public void handle(ActionEvent event) {
 				if (dao.deleteStudentConfirmation(studentTable.getSelectionModel().getSelectedItem())) {					
 					dao.deleteStudent(studentTable.getSelectionModel().getSelectedItem().getIndex());
-					dao.loadStudentTree(observableStudents);
+					updateTVMode(dao);
 					//Decrease entriesnumber label :
 					//	dao.entriesNumber-- ;   
 					//editpanel.updateLblTotalEntriesNumber(dao.entriesNumber) ;  //attention : modifier dans settings aussi!
@@ -400,6 +460,28 @@ public class MainPanel extends BorderPane {
 		});
 	}
 
+	
+	
+	private void updateTVMode(StudentDao dao) {
+		if(searchMode.equals("simple")) {
+			if(searchField.getText().length()>0) {
+				dao.simpleSearch(searchField.getText(), observableStudents);
+			} else {
+				dao.loadStudentTree(observableStudents);
+			}
+		} else {
+			launchAdvSearch(dao);
+		}
+	}
+	
+	private void launchAdvSearch(StudentDao dao) {
+		String zipSearch = editpanel.getCbZipCode().getSelectionModel().getSelectedItem();
+		String promoSearch = editpanel.getCbPromo().getSelectionModel().getSelectedItem();
+		String yearSearch = editpanel.getCbYear().getSelectionModel().getSelectedItem();
+		dao.advSearch(searchField.getText(),zipSearch, promoSearch, yearSearch, observableStudents);
+	}	
+	
+	
 	public void updateLblTotalEntriesNumber (int entriesNumber) {
 		lblTotalEntries.setText("Affichage de "+ (entriesNumber) +" stagiaires     "); 
 	}

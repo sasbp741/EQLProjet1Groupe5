@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -60,8 +61,13 @@ public class StudentDao {
 	public static File settingsFile = new File(settingsPathFile);
 	public static int settingsLength = 5;
 
+	public int totalSearchFields = 0;
+	public int totalMatchingFields = 0;
+	
+	public TreeMap<String, Integer> promoList = new TreeMap<String, Integer>();
+
 	public List<Student> loadStudentFile() {
-		System.out.println("loaded");
+		
 		studentList.clear();
 
 		RandomAccessFile raf = null;
@@ -80,13 +86,11 @@ public class StudentDao {
 					raf.read(b);
 					studentInfo[j] = new String(b).trim();
 				}
-				// System.out.println(studentInfo[0] + " " + studentInfo[1] + " " +
-				// studentInfo[2] + " " + studentInfo[3] + " " + studentInfo[4]);
+				
 				Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],
 						studentInfo[4], i); // i=index
 				studentList.add(student);
-				// System.out.println(student.getLastname() + " : "+student.getFirstname() + " :
-				// "+student.getZipcode() + " : "+student.getPromo());
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -130,7 +134,7 @@ public class StudentDao {
 			addNewStudentToTree(entriesNumber); 
 			entriesNumber++;
 			writeSettings(6, entriesNumber);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -319,7 +323,7 @@ public class StudentDao {
 						swapLines(j, j + 1, raf);
 					}
 					float progress = (float)(entriesNumber-i)/entriesNumber;
-	                progressBar.setProgress(.5+(progress*.25F));
+					progressBar.setProgress(.5+(progress*.25F));
 				}
 			}
 		} catch (IOException e) {
@@ -450,7 +454,7 @@ public class StudentDao {
 					writeSettings(i + 1, maxLength[i]);
 				} 
 			} SEQUENCE_LENGTH += 1 ;
-			
+
 			writeSettings(0, SEQUENCE_LENGTH);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -582,7 +586,7 @@ public class StudentDao {
 			if (!term.trim().equals("")) {
 				simpleSearchRecursive(term.toUpperCase(), TREE_ROOT, raf, observableStudents);
 			} else {
-				System.out.println("test");
+				
 				loadStudentTree(observableStudents);
 
 			}
@@ -650,81 +654,6 @@ public class StudentDao {
 		}
 	}
 
-	//---------------------------------------------------------------------------------------
-	//	public void affichageAlphabetique(ObservableList<Student> observableStudents) {
-	//        File dest = new File(destinationPath);
-	//        RandomAccessFile raf = null;
-	//        try {
-	//            raf = new RandomAccessFile(dest, "rw");
-	//            String medianSAD = getStudentSAD(TREE_ROOT,raf).trim();
-	//            String medianSAG = getStudentSAG(TREE_ROOT,raf).trim();
-	//            AffichageAlphabetiqueRecursive(Integer.parseInt(medianSAG), raf, observableStudents);
-	//            // ajout du milieu dans observablesStudents
-	//            AffichageAlphabetiqueRecursive(Integer.parseInt(medianSAD), raf, observableStudents);
-	//        } catch (IOException e) {
-	//            e.printStackTrace();
-	//        } finally {
-	//            try {
-	//                if (raf != null) {
-	//                    raf.close();
-	//                }
-	//            } catch (IOException e) {
-	//                e.printStackTrace();
-	//            }
-	//        }
-	//    }
-	//	
-	//	public void AffichageAlphabetiqueRecursive(int index, RandomAccessFile raf, ObservableList<Student> observableStudents) {
-	//        try {
-	//            String SAD = getStudentSAD(index, raf);
-	//            String SAG = getStudentSAG(index, raf);
-	//            if (SAG.length() >= 1) {
-	//                AffichageAlphabetiqueRecursive(Integer.parseInt(SAG), raf, observableStudents);
-	//                addInTableview(index, raf, observableStudents);
-	//                if (SAD.length() >= 1) {
-	//                    AffichageAlphabetiqueRecursive(Integer.parseInt(SAD), raf, observableStudents);
-	//                }
-	//            } else if (SAG.length() < 1 && SAD.length() < 1){
-	//                addInTableview(index, raf, observableStudents);
-	//            }else if (SAG.length() < 1 && SAD.length() >= 1){
-	//                addInTableview(index, raf, observableStudents);
-	//                AffichageAlphabetiqueRecursive(Integer.parseInt(SAD), raf, observableStudents);
-	//            } else {
-	//                System.out.println("dont work");;
-	//            }
-	//        } catch (IOException e) {
-	//            e.printStackTrace();
-	//        }
-	//    }
-
-
-	public void addInTableview(int index, RandomAccessFile raf, ObservableList<Student> observableStudents) {
-		try {
-			raf.seek(index * SEQUENCE_LENGTH - 1);
-			String[] studentInfo = new String[7];
-			for (int j = 0; j < 5; j++) {
-				byte[] c = new byte[maxLength[j]];
-				raf.read(c);
-				studentInfo[j] = new String(c).trim();
-			}
-			Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],studentInfo[4],index);
-			observableStudents.add(student);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	//	List<Student> studentList2 = new ArrayList<>(); 
-	//    StudentDao dao = new StudentDao();
-	//   // studentList2 = FXCollections.observableArrayList();
-	//    dao.affichageAlphabetique(studentList2);
-	//    for (int i = 0; i < 50 ; i++) {
-	//        System.out.println(studentList2.get(i).getFirstName() + "  " + studentList2.get(i).getLastName() );
-	//    }
-
-
-
-
 
 
 
@@ -736,14 +665,14 @@ public class StudentDao {
 		try {
 			raf = new RandomAccessFile(binFile, "r");
 			loadStudentTreeRecursive(TREE_ROOT, raf, observableStudents);
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void loadStudentTreeRecursive(int index, RandomAccessFile raf,	ObservableList<Student> observableStudents) {
-		
+	public void loadStudentTreeRecursive(int index, RandomAccessFile raf,	ObservableList<Student> observableStudents) {
+
 		try {
 
 			String SAD = getStudentSAD(index, raf);
@@ -760,10 +689,10 @@ public class StudentDao {
 				studentInfo[j] = new String(c).trim();
 			}
 			Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],studentInfo[4],index);
-			
+
 			if (isVisible(index, raf)) {
 				observableStudents.add(student);
-				
+				promoList.put(studentInfo[3].toUpperCase(),1) ;
 				//visibleEntriesNumber++ ;
 			}
 
@@ -778,9 +707,93 @@ public class StudentDao {
 	}
 
 
+	public void advSearch(String searchField,String zipSearch, String promoSearch, String yearSearch, ObservableList<Student> observableStudents) {
+		File dest = new File(destinationPath);
+		RandomAccessFile raf = null;
 
+		try {
+			raf = new RandomAccessFile(dest, "rw");
+			if (!searchField.equals("") || !zipSearch.equals("--") || !yearSearch.equals("--") || !promoSearch.equals("--")) {
+				observableStudents.clear();
+				advSearchRecursive(TREE_ROOT,searchField,zipSearch,promoSearch,yearSearch, observableStudents,raf) ;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
+	public void advSearchRecursive(int index, String searchField,String zipSearch, String promoSearch, String yearSearch, ObservableList<Student> observableStudents, RandomAccessFile raf) {
 
+		try {
+			String SAG = getStudentSAG(index, raf) ;
+			String SAD = getStudentSAD(index, raf) ;			
+
+//recherche dans le SAG	
+			if(SAG.length()>0) {
+				advSearchRecursive(Integer.parseInt(SAG),searchField,zipSearch,promoSearch,yearSearch, observableStudents,raf) ;			
+			} 
+			
+			
+			if (isVisible(index, raf)) {
+				
+				raf.seek(SEQUENCE_LENGTH*index);
+				String[] studentInfo = new String[7];
+				for (int i = 0; i < 5; i++) {
+					byte[] c = new byte[maxLength[i]];
+					raf.read(c);
+					studentInfo[i] = new String(c).trim();
+				}
+				Student student = new Student(studentInfo[0], studentInfo[1], studentInfo[2], studentInfo[3],studentInfo[4],index);
+
+				//recherche avec les critères :			
+				totalMatchingFields =0 ;
+				totalSearchFields =0 ;
+				
+
+				if(!searchField.equals("")) {
+					totalSearchFields++ ;
+					if (student.getLastName().toUpperCase().contains(searchField.toUpperCase()) || student.getFirstName().toUpperCase().contains(searchField.toUpperCase()) ) {
+						totalMatchingFields++ ;
+					}
+				}
+
+				if(!zipSearch.equals("--")) {
+					totalSearchFields++ ;
+					if (student.getZipCode().equals(zipSearch) ) {
+						totalMatchingFields++ ;
+					}
+				}
+
+				if(!promoSearch.equals("--")) {
+					totalSearchFields++ ;
+					if (student.getPromo().equals(promoSearch) ) {
+						totalMatchingFields++ ;
+					}
+				}
+
+				if(!yearSearch.equals("--")) {
+					totalSearchFields++ ;
+					if (student.getYear().equals(yearSearch) ) {
+						totalMatchingFields++ ;
+						
+					}
+				}
+
+				if (totalSearchFields>0 && totalMatchingFields == totalSearchFields) {
+					observableStudents.add(student) ;
+				}
+				
+			}
+			
+
+			if(SAD.length()>0) {
+				advSearchRecursive(Integer.parseInt(SAD),searchField,zipSearch,promoSearch,yearSearch, observableStudents,raf) ;			
+			} 
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static String exportToPdf(ObservableList<Student> observableStudents) throws IOException {
 		String title = "Annuaire EQL";
@@ -788,9 +801,9 @@ public class StudentDao {
 		LocalDateTime now = LocalDateTime.now();
 		String[] today = String.valueOf(dtf.format(now)).split(" ");
 		DateTimeFormatter dtfFile = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
-        String todayFile = dtfFile.format(now);
-        String filename = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\annuaireEQL_"+todayFile+".pdf";
-		
+		String todayFile = dtfFile.format(now);
+		String filename = "C:\\Users\\formation\\eclipse-workspace\\AnnuaireEQL\\src\\fr\\eql\\ai109\\projet1\\annuaireEQL_"+todayFile+".pdf";
+
 		//On initialise un nouveau document dans PDFBox
 		PDDocument annuairePdf = new PDDocument();
 
@@ -854,7 +867,7 @@ public class StudentDao {
 			contents.newLineAtOffset(40, -145);
 			contents.showText("Exporté le " + today[0] + " à  " + today[1]);
 			contents.newLineAtOffset(55, -15);
-			contents.showText(entriesNumber+" entrées");
+			contents.showText(observableStudents.size()+" entrées");
 			contents.endText();
 			contents.close();
 

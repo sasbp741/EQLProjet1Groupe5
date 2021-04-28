@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -121,6 +122,9 @@ public class LoadingPanel extends BorderPane {
 									MainPanel root = new MainPanel(dao);
 									Scene scene2 = new Scene(root);
 									Stage primaryStage2 = new Stage() ;
+									primaryStage2.setTitle("Annuaire EQL");
+                                    primaryStage2.getIcons().add(new Image("/icons/iconeeql.png"));
+
 									
 									primaryStage2.setScene(scene2);
 									primaryStage2.show();
