@@ -1,68 +1,109 @@
 <html>
+    <head>
+        <title>DOCUMENTATION ANNUAIRE EQL</title>   
+    </head>
+    <body style = "background-color: #dfe6e9;">
+    
+        <header>
+            <h1>DOCUMENTATION DE L'ANNUAIRE EQL</h1>
+        </header>
 
-<body>
-Sommaire
-PrÃ©sentation
-Objectif
-Interface
-Droits d'accÃ¨s et fonctionnalitÃ©s
+        <h1>Présentation</h1>
+            <h2>Objectif</h2>
+                <p>L'objectif de l'annuaire de l'EQL est de regrouper l'ensemble des stagiaires ayant suivi une formation à l'école, au sein d'une base de données commune.</p>
+                <p>Pour chaque stagiaire, on y retrouve les informations suivantes :</p>
+                <ul>
+                    <li>son nom ;</li>
+                    <li>son prénom ;</li>
+                    <li>son département de résidence ;</li>
+                    <li>sa promotion</li>
+                    <li>l'année de sa promotion.</li>
+                </ul>
+            <h2>Interface</h2>
+                <p>L'interface du logiciel se veut intuitive et se compose de 3 panneaux :</p>
+                <ul>
+                    <li>une <strong>fenêtre principale</strong>, contenant la liste des stagiaires et le panneaux recherche avancée;</li>
+                    <li>une fenêtre d'<strong>ajout</strong> et de <strong>modification d'un stagiaire</strong> ;</li>
+                    <li>une fenêtre d'<strong>export</strong> de l'annuaire en <strong>document PDF</strong>.</li>
+                </ul>
+            <h2>Droits d'accès et fonctionnalités</h2>
+                <p>Selon la personne utilisant l'annuaire EQL, il existe 2 modes donnant accès à différentes fonctionnalités :</p>
+                <ul>
+                    <li>le mode <strong>utilisateur</strong>  (voir passage au mode <a href="#user">Utilisateur</a>);</li>
+                    <li>le mode <strong>administrateur</strong>  (voir passage au mode <a href="#admin">Administateur</a>).</li>
+                </ul>
+                <h3>- Mode utilisateur</h3>
+                    <p>Accessible par défaut, ce mode offre la possibilité d'utiliser les fonctionnalités suivantes :</p>
+                    <ul>
+                        <li>Consulter l'annuaire;</li>
+                        <li><a href="#research">Rechercher un stagiaire</a>;</li>
+                        <li><a href="#add">Ajouter un stagiaire</a>;</li>
+                        <li><a href="#pdf">Exporter tout ou une partie de l'annuaire en PDF</a>.</li>
+                    </ul>
+                <h3>- Mode administrateur</h3>
+                    <p>Ce mode donne accès à l'ensemble des fonctionnalités du mode utilisateur, ainsi que les suivantes :</p>
+                    <ul>
+                    <li><a href="#modify">Modifier un stagiaire</a>;</li>
+                    <li><a href="#delete">Supprimer un stagiaire</a>.</li>
+                    </ul>
 
-FonctionnalitÃ©s
-Rechercher un stagiaire
-Ajouter un stagiaire
-Modifier un stagiaire
-Supprimer un stagiaire
-Exporter l'annuaire en PDF
-
-<h1>PrÃ©sentation</h1>
-<h2>Objectif</h2>
-<p>L'objectif de l'annuaire de l'EQL est de regrouper l'ensemble des stagiaires ayant suivi une formation Ã  l'Ã©cole, au sein d'une base de donnÃ©es commune.</p>
-<p>Pour chaque stagiaire, on y retrouve les informations suivantes :</p>
-<ul>
-<li>son nom ;</li>
-<li>son prÃ©nom ;</li>
-<li>son dÃ©partement de rÃ©sidence ;</li>
-<li>sa promotion</li>
-<li>l'annÃ©e de sa promotion.</li>
-</ul>
-<h2>Interface</h2>
-<p>L'interface du logiciel se veut intuitive et se compose de 4 panneaux :
-<ul>
-<li>une <strong>fenÃªtre principale</strong>, contenant la liste des stagiaires ;</li>
-<li>une fenÃªtre d'<strong>ajout</strong> et de <strong>modification d'un stagiaire</strong> ;</li>
-<li>une fenÃªtre de <strong>recherche avancÃ©e</strong> ;</li>
-<li>une fenÃªtre d'<strong>export</strong> de l'annuaire en <strong>document PDF</strong>.</li>
-</ul>
-<h2>Droits d'accÃ¨s et fonctionnalitÃ©s</h2>
-<p>Selon la personne utilisant l'annuaire EQL, il existe 2 modes donnant accÃ¨s Ã  diffÃ©rentes fonctionnalitÃ©s :
-<ul>
-<li>le <a href="#utilisateur">mode utilisateur</a> ;</li>
-<li>le <a href="#admin">mode administrateur</a>.</li>
-</ul>
-</p>
-
-<h3><a id="utilisateur">Mode utilisateur</a></h3>
-<p>Accessible par dÃ©faut, ce mode offre la possibilitÃ© d'utiliser les fonctionnalitÃ©s suivantes :
-<ul>
-<li>Consulter l'annuaire ;</li>
-<li>Rechercher un stagiaire ;</li>
-<li>Ajouter un stagiaire ;</li>
-<li>Exporter tout ou une partie de l'annuaire en PDF.</li>
-</ul>
-</p>
-<h3><a id="admin">Mode administrateur</a></h3>
-<p>Ce mode donne accÃ¨s Ã  l'ensemble des fonctionnalitÃ©s du mode utilisateur, ainsi que les suivantes :
-<ul>
-<li>Modifier un stagiaire ;</li>
-<li>Supprimer un stagiaire.</li>
-</ul>
-</p>
-<h1>PrÃ©sentation des fonctionnalitÃ©s</h1>
-<h2>Rechercher un stagiaire</h2>
-<h2>Ajouter un stagiaire</h2>
-<h2>Modifier un stagiaire</h2>
-<h2>Supprimer un stagiaire</h2>
-<h2>Exporter l'annuaire en PDF</h2>
-
-</body>
+        <h1>Présentation des fonctionnalités</h1>
+            <h2 id="research">Rechercher un stagiaire</h2>
+                <h3>Recherche uniquement sur le nom et le prénom : </h3>
+                    <p>Sur la page d'acceuil, pour effectuer un recherche par nom, veuillez rentrer à l'aide de votre clavier, le nom et/ou le prénom que vous souhaitez retrouver dans votre base de donnée dans le texte Field correspondant</p>
+                    <p>Comme montré dans l'exemple ci-dessous :</p>
+                    <img src="images/rechercheNom.png" alt="recherche par nom ou prénom">
+                <h3>Recherche avancée : </h3>
+                    <p> Pour une recherche avancée, dans la page d'acceuil, vous devez cliquer sur le texte "Affiner la recherche"</p>
+                    <img src="images/selectionRechercheAvancee.png " alt="recherche avancée">
+                    <p>Puis vous devez renseigner un ou plusieurs champs selon ce que vous désirez rechercher(les champs encadrés en rouge sur l'image suivante)<br>
+                        Attention : Les champs département, promotion et année sont des champs à séléctionner directement en cliquant dessus
+                    </p>
+                    <img src="images/rechercheAvancee.png" alt="recherche avancéé 2">
+            <h2 id="add">Ajouter un stagiaire</h2>
+                <h3>Ajouter une stagiaire grâce au bouton a "ajouter un stagiaire</h3>
+                    <p>Pour ajouter un stagiaire, dans la page d'acceuil, vous devez clicker dans le boutton "Ajouter un stagiaire" situé en bas de page</p>
+                    <img src="images/ajouterStagiareButon.png" alt="">
+                <h3>Ajouter un stagiaigre grâce à la barre de Menu</h3>
+                    <p>Pour ajouter un stagiaire vous devez clicker dans la barre des Menus sur le Menu "Edition"(1), puis sur "Ajouter un stagiaire"(2) comme sur l'image suivante :</p>
+                    <img src="images/ajouterStagiareMenu.png" alt="">
+                <h3>Remplir les donées du stagiaire à ajouter</h3>
+                    <p>Une fois que le vous avez selctionner l'ajout d'un stagiaire, une nouvelle fenêtre va apparaitre, il faudra ensuite remplir dans chaque champs les données correspondante au stagiaire que vous voulez rajouter, comme indiqué dans l'image suivante :<br>Attention : le département et l'année sont uniquement des choix à sélctionner</p>
+                    <p>Pour valider l'ajout d'un stagiaire, clicker ensuite sur le boutton "Ajouter un stagiaire", dans le cas contraire clicker sur le boutton "Annuler"</p>
+                    <img src="images/ajouterStagiaire.png" alt="">
+            <h2 id="modify">Modifier un stagiaire</h2>
+                <h3>Selectionner le stagiaire à modifier</h3>
+                    <ol>Pour modifier un stagiaire vous devez : 
+                        <li>Selectionner un stagiaigre dans l'affichage des stagiaires</li>
+                        <li>Clicker sur le boutton "Modifier un Stagiaire" en bas de page ou clicker dans la barre des Menu sur le Menu "Edition", puis sur "Modifier un stagiaire"</li>
+                    </ol>
+                    <img src="images/modifierStagiaireSeclection.png" alt="">
+                <h3>Modifier les champs du stagiaigre</h3>
+                        <p>Vous devez ensuite modifier si besoin les champs que vous voulez modifier(ici encadrés en rouge) et </p>
+                        <p>Pour valider la modification du stagiaire, clicker ensuite sur le boutton "Comfirmer la modification", dans le cas contraire clicker sur le boutton "Annuler"</p>
+                        <img src="images/modifierStagiaire.png" alt="">
+            <h2 id="delete">Supprimer un stagiaire</h2>
+                <ol>Pour modifier un stagiaire vous devez :
+                    <li>Selectionner un stagiaigre dans l'affichage des stagiaire dans la page d'acceuil</li>
+                    <li>Clicker sur le boutton "Supprimer un Stagiaire" en bas de page ou clicker dans la barre des Menu sur le Menu "Edition", puis sur "Supprimer un stagiaire"</li>
+                </ol>
+                <img src="images/supprimerStagiaire.png" alt="">
+            <h2 id="pdf">Exporter l'annuaire en PDF</h2>
+                <p>Pour exporter un PDF vous devez clicker dans la barre des Menus sur le Menu "Edition"(1), puis sur "Ajouter un stagiaire"(2) comme sur l'image suivante :</p>
+                <img src="images/importPDF.png" alt="">
+            <h2 id="admin">Passer du mode Utilisateur à Administrateur</h2>
+                <h3>Selectionner le mode administrateur</h3>
+                    <p>Pour sélectionner le mode administrateur vous devez clicker dans la barre des Menus sur le Menu "Mode"(1), puis sur "Administrateur"(2) comme sur l'image suivante :</p>
+                    <img src="images/selectionModeAdmin.png" alt="">
+                <h3>Rentrer le mot de passe admin</h3>
+                    <ol>
+                        <li>Puis vous devez rentrer votre mot de passe administateur dans le champs correspondant</li>
+                        <li>Clicker sur le boutton "Comfirmer la modification", dans le cas contraire clicker sur le boutton "Annuler"</li> 
+                    </ol>
+                    <img src="images/selectionAdmin.png" alt="">
+            <h2 id="user">Passer du mode Administateur à mode Ulisateur</h2>
+            <p>Pour sélectionner le mode utilisateur vous devez clicker dans la barre des Menus sur le Menu "Mode"(1), puis sur "Utilisateur"(2) comme sur l'image suivante :</p>
+            <img src="images/selectionUser.png" alt="">
+                    
+    </body>
 </html>
